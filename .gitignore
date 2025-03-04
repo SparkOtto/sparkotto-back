@@ -1,0 +1,12 @@
+# Node.js
+node_modules/
+dist/
+.cache/
+
+# Logs & Config
+logs/
+*.log
+.env
+.env.local
+
+# Docker
