@@ -3,6 +3,8 @@ version: "3.8"
 services:
   backend:
     image: sparkotto-back-backend
+    build:
+      context: .
     ports:
       - "3001:3001"
     environment:
