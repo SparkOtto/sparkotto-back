@@ -1,5 +1,5 @@
 # Étape 1 : Build de l'application
-FROM node:18 AS build
+FROM node:lts-alpine AS build
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN npm install
 COPY . .
 
 # Étape 2 : Exécution en production
-FROM node:18
+FROM node:lts-alpine
 
 WORKDIR /app
 
