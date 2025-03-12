@@ -42,7 +42,7 @@ jobs:
           SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
         run: |
           npx sonar-scanner \
-            -Dsonar.organization=SparkOtto \
+            -Dsonar.organization=sparkotto \
             -Dsonar.projectKey=SparkOtto_sparkotto-back \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
