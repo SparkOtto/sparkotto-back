@@ -67,7 +67,7 @@ jobs:
       - name: Scan Docker image for vulnerabilities (si Docker est utilisé)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "ghcr.io/SparkOtto/sha256:d00da4a39d953f046225e7c20f9f53cb95fc8ffc881db627236480c03604b4b7"
+          image-ref: "ghcr.io/SparkOtto/sparkotto-back-backend:latest"
           exit-code: "0"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
