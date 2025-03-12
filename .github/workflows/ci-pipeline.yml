@@ -63,3 +63,6 @@ jobs:
           exit-code: "0"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
+
+      - name: Run File System Scan
+        run: trivy fs --exit-code 1 --severity CRITICAL,HIGH .
