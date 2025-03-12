@@ -24,7 +24,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "pg": "^8.13.3",
-    "url-regex-safe": "^4.0.0"
+    "url-regex-safe": "^4.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
