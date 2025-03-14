@@ -9,7 +9,8 @@
     "copy-openapi": "copyfiles -u 1 src/openapi.yaml dist/",
     "build:full": "npm run build && npm run copy-openapi",
     "start": "node --experimental-specifier-resolution=node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "dev": " NODE_ENV=development ts-node src/index.ts",
+    "prod": "NODE_ENV=production ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
