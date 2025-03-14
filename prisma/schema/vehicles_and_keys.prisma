@@ -1,0 +1,59 @@
+model Vehicles {
+  id_vehicle     Int                   @id @default(autoincrement())
+  brand          String
+  model          String
+  fuel_type      FuelTypes             @relation(fields: [fuelTypeId], references: [id_fuel])
+  fuelTypeId     Int
+  license_plate  String                @unique
+  mileage        Int
+  seat_count     Int
+  agency_id      Int
+  agency         Agencies              @relation(fields: [agency_id], references: [id_agency])
+  available      Boolean
+  fuel_capacity  Int?
+  transmission   Transmissions         @relation(fields: [transmissionId], references: [id_transmission])
+  transmissionId Int
+  maintenance    MaintenanceRecords[]
+  keys           Keys?
+  state_records  VehicleStateRecords[]
+  trips          Trips[]
+}
+
+model FuelTypes {
+  id_fuel   Int        @id @default(autoincrement())
+  fuel_name String
+  vehicles  Vehicles[]
+}
+
+model Transmissions {
+  id_transmission   Int        @id @default(autoincrement())
+  transmission_type String
+  vehicles          Vehicles[]
+}
+
+model MaintenanceRecords {
+  id_maintenance Int      @id @default(autoincrement())
+  id_vehicle     Int
+  vehicle        Vehicles @relation(fields: [id_vehicle], references: [id_vehicle])
+  start_date     DateTime
+  end_date       DateTime
+}
+
+model Keys {
+  id_key        Int          @id @default(autoincrement())
+  key_name      String
+  key_location  KeyLocations @relation(fields: [keyLocationId], references: [id_key_location])
+  keyLocationId Int
+  vehicle_key   Vehicles?    @relation(fields: [vehicleKeyId], references: [id_vehicle])
+  vehicleKeyId  Int?         @unique
+  trips         Trips[]
+}
+
+model KeyLocations {
+  id_key_location Int      @id @default(autoincrement())
+  agency_id       Int
+  agency          Agencies @relation(fields: [agency_id], references: [id_agency])
+  office          String
+  comment         String?
+  keys            Keys[]
+}
