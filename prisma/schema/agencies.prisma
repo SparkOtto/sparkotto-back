@@ -8,4 +8,5 @@ model Agencies {
   users           User[]
   vehicles        Vehicles[]
   key_locations   KeyLocations[]
+  head_office     Boolean
 }
