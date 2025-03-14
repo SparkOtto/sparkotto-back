@@ -1,0 +1,27 @@
+model Trips {
+  id_trip            Int          @id @default(autoincrement())
+  id_used_key        Int
+  key                Keys         @relation(fields: [id_used_key], references: [id_key])
+  id_vehicle         Int
+  vehicle            Vehicles     @relation(fields: [id_vehicle], references: [id_vehicle])
+  id_driver          Int
+  driver             User         @relation(fields: [id_driver], references: [id_user])
+  start_date         DateTime
+  end_date           DateTime
+  departure_agency   Int
+  arrival_agency     Int
+  reservation_status String
+  carpooling         Boolean
+  meeting_time       DateTime?
+  meeting_comment    String?
+  carpoolings        Carpooling[]
+}
+
+model Carpooling {
+  id_trip      Int
+  trip         Trips @relation(fields: [id_trip], references: [id_trip])
+  id_passenger Int
+  passenger    User  @relation(fields: [id_passenger], references: [id_user])
+
+  @@id([id_trip, id_passenger])
+}
