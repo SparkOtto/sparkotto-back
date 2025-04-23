@@ -10,3 +10,6 @@ logs/
 .env.local
 
 # Docker
+
+# intellij
+.idea/

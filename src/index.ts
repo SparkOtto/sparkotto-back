@@ -26,6 +26,32 @@ app.get("/", (req, res) => {
 // Chemin vers le dossier des routes
 const routesPath = path.join(__dirname, 'routes');
 
+
+// Load OpenAPI specification
+const openApiPath = path.join(__dirname, 'openapi.yaml');
+const openApiDocument = yaml.parse(fs.readFileSync(openApiPath, 'utf8'));
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(openApiDocument));
+
+
+/*app.use(
+  OpenApiValidator.middleware({
+    apiSpec: openApiDocument,
+    validateRequests: true,
+    validateResponses: true,
+  })
+);*/
+
+// Charger les variables en fonction de l'environnement
+const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+dotenv.config({ path: envFile });
+
+console.log(`Chargement des variables d'environnement depuis ${envFile}`);
+console.log(`Environnement: ${process.env.NODE_ENV}`);
+console.log(`Base de données: ${process.env.DATABASE_URL}`);
+
+
 // Fonction pour charger dynamiquement les routes
 async function loadRoutes(routesPath: string) {
   const files = fs.readdirSync(routesPath);
@@ -54,21 +80,6 @@ async function loadRoutes(routesPath: string) {
     }
   }
 }
-// Load OpenAPI specification
-const openApiPath = path.join(__dirname, 'openapi.yaml');
-const openApiDocument = yaml.parse(fs.readFileSync(openApiPath, 'utf8'));
-
-// Serve Swagger UI
-app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(openApiDocument));
-
-
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: openApiDocument,
-    validateRequests: true,
-    validateResponses: true,
-  })
-);
 
 
 // Chargement des routes au démarrage de l'application

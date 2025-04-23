@@ -38,7 +38,7 @@ class UserController {
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       //const users = await this.userService.getAllUsers();
-      const users = ['test']
+      const users = 'test';
       res.json(users);
     } catch (error: any) {
       res.status(500).json({ message: 'Erreur serveur' });
