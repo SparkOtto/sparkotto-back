@@ -30,18 +30,18 @@ class UserController {
         res.status(404).json({ message: 'Utilisateur non trouvé' });
       }
     } catch (error: any) {
-      res.status(500).json({ message: 'Erreur serveur' });
+      res.status(500).json({ message: 'Erreur serveur pour la récupération de l\'utilisateur' });
     }
   }
 
   // Obtenir tous les utilisateurs
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
-      //const users = await this.userService.getAllUsers();
-      const users = 'test';
+      const users = await this.userService.getAllUsers();
+      //const users = 'test';
       res.json(users);
     } catch (error: any) {
-      res.status(500).json({ message: 'Erreur serveur' });
+      res.status(500).json({ message: 'Erreur serveur pour l\'obtention de tous les utilisateurs' });
     }
   }
 
@@ -71,7 +71,7 @@ class UserController {
       if (error.message === 'Utilisateur non trouvé') {
         res.status(404).json({ message: error.message });
       } else {
-        res.status(500).json({ message: 'Erreur serveur' });
+        res.status(500).json({ message: 'Erreur serveur pour la suppression utilisateur' });
       }
     }
   }
@@ -83,7 +83,7 @@ class UserController {
       const users = await this.userService.searchUsers(query);
       res.json(users);
     } catch (error: any) {
-      res.status(500).json({ message: 'Erreur serveur' });
+      res.status(500).json({ message: 'Erreur serveur pour la rechercher utilisateurs' });
     }
   }
 
@@ -95,7 +95,7 @@ class UserController {
       const users = await this.userService.paginateUsers(page, perPage);
       res.json(users);
     } catch (error: any) {
-      res.status(500).json({ message: 'Erreur serveur' });
+      res.status(500).json({ message: 'Erreur serveur pour la pagination utilisateurs' });
     }
   }
 }
