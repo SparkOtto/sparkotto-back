@@ -30,7 +30,11 @@ class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    return this.userDAO.getUserByEmail(email);
+    const existingUser = await this.userDAO.getUserByEmail(email);
+    if(!existingUser) {
+      throw new Error('Utilisateur non trouvé');
+    }
+    return existingUser;
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -52,6 +56,11 @@ class UserService {
     }
     return this.userDAO.deleteUser(id);
   }
+
+  async getRoleName(roleId: number) {
+    return this.userDAO.getRoleNameByRoleId(roleId);
+  }
+
 }
 
 export default UserService;

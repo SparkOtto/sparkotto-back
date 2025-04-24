@@ -20,12 +20,22 @@ describe('UserService', () => {
         it('should create a new user', async () => {
             const userData: Omit<User, 'id'> = {
                 email: 'test@test.com',
-                name: 'Test User',
+                first_name: 'Test User',
                 password: 'password123',
+                id_user: 1,
+                last_name: '',
+                phone_number: null,
+                roleId: 0,
+                agency_id: null,
+                license_number: null,
+                failed_attempts: null,
+                account_locked: null,
+                active: null,
+                deactivation_date: new Date("2199-04-05 10:00:00")
             };
 
             userDAO.getUserByEmail.mockResolvedValue(null);
-            userDAO.createUser.mockResolvedValue({ id: 1, ...userData });
+            userDAO.createUser.mockResolvedValue({ ...userData });
 
             const result = await userService.createUser(userData);
 
@@ -37,11 +47,21 @@ describe('UserService', () => {
         it('should throw an error if user already exists', async () => {
             const userData: Omit<User, 'id'> = {
                 email: 'test@test.com',
-                name: 'Test User',
+                first_name: 'Test User',
                 password: 'password123',
+                last_name: 'last',
+                agency_id: 0,
+                roleId: 0,
+                phone_number: "0123456",
+                id_user: 1,
+                license_number: null,
+                failed_attempts: null,
+                account_locked: null,
+                active: null,
+                deactivation_date: new Date("2199-04-05 10:00:00"),
             };
 
-            userDAO.getUserByEmail.mockResolvedValue({ id: 1, ...userData });
+            userDAO.getUserByEmail.mockResolvedValue({ ...userData });
 
             await expect(userService.createUser(userData)).rejects.toThrow('Un utilisateur avec cet email existe déjà');
             expect(userDAO.getUserByEmail).toHaveBeenCalledWith(userData.email);
@@ -51,7 +71,21 @@ describe('UserService', () => {
 
     describe('getUserById', () => {
         it('should return a user by id', async () => {
-            const user: User = { id: 1, email: 'test@test.com', name: 'Test User', password: 'password123' };
+            const user: User = {
+                id_user: 1,
+                email: 'test@test.com',
+                first_name: 'Test User',
+                password: 'password123',
+                last_name: '',
+                phone_number: null,
+                roleId: 0,
+                agency_id: null,
+                license_number: null,
+                failed_attempts: null,
+                account_locked: null,
+                active: null,
+                deactivation_date: new Date("2199-04-05 10:00:00")
+            };
 
             userDAO.getUserById.mockResolvedValue(user);
 
