@@ -8,7 +8,11 @@ class AdminController{
         this.adminService = new AdminService();
     }
 
-    //Activer ou désactiver un utilisateur
+    /**
+     * Activer ou désactiver un profil utilisateur
+     * @param req
+     * @param res
+     */
     async toggleUserStatus(req: Request, res: Response): Promise<Response>{
         const id = parseInt(req.params.id);
         const isActive = req.body;
