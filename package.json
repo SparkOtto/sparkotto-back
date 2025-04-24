@@ -30,7 +30,6 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-openapi-validator": "^5.4.6",
-    "jsonwebtoken": "^9.0.2",
     "openapi-typescript": "^7.6.1",
     "pg": "^8.13.3",
     "swagger-ui-express": "^5.0.1",
