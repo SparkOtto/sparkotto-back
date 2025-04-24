@@ -8,5 +8,6 @@ logs/
 *.log
 .env
 .env.local
+.idea/
 
 # Docker
