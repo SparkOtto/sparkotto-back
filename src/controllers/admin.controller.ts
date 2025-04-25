@@ -43,7 +43,6 @@ class AdminController{
                 }
             } else {
                 throw new Error("Données invalides, si l'erreur perciste, veuillez contacter votre administrateur");
-                console.error("La valeur isApproved doit être un boolean");
             }
 
             return res.status(200).json({
