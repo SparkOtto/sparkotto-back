@@ -13,3 +13,8 @@ logs/
 
 # intellij
 .idea/
+
+
+.env
+.env.development
+.env.production
