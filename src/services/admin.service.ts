@@ -24,6 +24,12 @@ class AdminService {
         return this.userDAO.updateUser(id, userData);
     }
 
+    /**
+     * @param to
+     * @param subject
+     * @param htmlContent
+     * @private
+     */
     private async sendEmail(to: string, subject: string, htmlContent: string): Promise<void> {
         const transporter = nodemailer.createTransport({
             //TODO Créer un fichier de constantes pour mail + mdp à mettre ici
@@ -49,6 +55,10 @@ class AdminService {
         }
     }
 
+    /**
+     *
+     * @param user
+     */
     async sendConfirmationEmail(user: User): Promise<void> {
         const subject = 'Confirmation de votre inscription';
         const htmlContent = `<p>Bonjour ${user.name},</p>
@@ -57,6 +67,10 @@ class AdminService {
         await this.sendEmail(user.email, subject, htmlContent);
     }
 
+    /**
+     *
+     * @param user
+     */
     async sendRejectionEmail(user: User): Promise<void> {
         const subject = 'Refus de votre inscription';
         const htmlContent = `<p>Bonjour ${user.name},</p>

@@ -35,10 +35,15 @@ class AdminController{
         const updatedUser = await this.adminService.toggleUserStatus(id, true);
 
         try {
-            if (isApproved){
-                await this.adminService.sendConfirmationEmail(updatedUser); // email de validation
+            if (typeof isApproved === 'boolean'){
+                if (isApproved){
+                    await this.adminService.sendConfirmationEmail(updatedUser); // email de validation
+                } else {
+                    await this.adminService.sendRejectionEmail(updatedUser); // email de refus
+                }
             } else {
-                await this.adminService.sendRejectionEmail(updatedUser); // email de refus
+                throw new Error("Données invalides, si l'erreur perciste, veuillez contacter votre administrateur");
+                console.error("La valeur isApproved doit être un boolean");
             }
 
             return res.status(200).json({
