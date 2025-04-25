@@ -1,11 +1,17 @@
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 import AdminService from '../services/admin.service';
+import UserService from "../services/user.service";
+import EmailService from "../services/email.service";
 
-class AdminController{
+class AdminController {
     private adminService: AdminService;
+    private userService: UserService;
+    private emailService: EmailService;
 
     constructor() {
         this.adminService = new AdminService();
+        this.userService = new UserService();
+        this.emailService = new EmailService();
     }
 
     /**
@@ -13,19 +19,20 @@ class AdminController{
      * @param req
      * @param res
      */
-    async toggleUserStatus(req: Request, res: Response): Promise<Response>{
+    async toggleUserStatus(req: Request, res: Response): Promise<Response> {
         const id = parseInt(req.params.id);
         const isActive = req.body;
-        try{
+        try {
             const updateUser = await this.adminService.toggleUserStatus(id, isActive);
             return res.status(200).json(updateUser);
-        } catch (error){
+        } catch (error) {
             return res.status(500).json({error: 'Erreur lors de la mise à jour de l\'utilisateur'});
         }
     }
 
     /**
      * Débloquer un utilisateur pour valider sa première inscription
+     * ou supprimer ses données en base si l'inscription est refusée
      * @param req
      * @param res
      */
@@ -34,15 +41,16 @@ class AdminController{
         const isApproved = req.body; // true pour inscription acceptée ou false si refusée
         const updatedUser = await this.adminService.toggleUserStatus(id, true);
 
+        if (typeof isApproved !== 'boolean') {
+            throw new Error("Données invalides, si l'erreur persiste, veuillez contacter votre administrateur");
+        }
+
         try {
-            if (typeof isApproved === 'boolean'){
-                if (isApproved){
-                    await this.adminService.sendConfirmationEmail(updatedUser); // email de validation
-                } else {
-                    await this.adminService.sendRejectionEmail(updatedUser); // email de refus
-                }
+            if (isApproved) {
+                await this.emailService.sendConfirmationEmail(updatedUser); // email de validation
             } else {
-                throw new Error("Données invalides, si l'erreur perciste, veuillez contacter votre administrateur");
+                await this.emailService.sendRejectionEmail(updatedUser); // email de refus
+                await this.userService.deleteUser(id); // supprimer les données en bdd
             }
 
             return res.status(200).json({
@@ -52,8 +60,9 @@ class AdminController{
                 user: updatedUser,
             });
         } catch (error) {
-            return res.status(500).json({ error: 'Erreur lors du taitement de l\'inscription de l\'utilisateur.' });
+            return res.status(500).json({error: 'Erreur lors du taitement de l\'inscription de l\'utilisateur.'});
         }
     }
 }
+
 export default AdminController;
