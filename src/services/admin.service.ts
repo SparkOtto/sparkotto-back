@@ -2,7 +2,7 @@ import {User} from "@prisma/client";
 import UserDAO from "../dao/user.dao";
 
 class AdminService {
-    private userDAO: UserDAO;
+    public userDAO: UserDAO;
 
     constructor() {
         this.userDAO = new UserDAO();
