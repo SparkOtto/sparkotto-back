@@ -5,20 +5,19 @@ import AdminService from "../admin.service";
 jest.mock('../../dao/user.dao')
 
 describe('AdminService', () => {
-    let adminService;
-    let userDAO;
+    let adminService: AdminService;
+    let userDAO: jest.Mocked<UserDAO>;
 
     beforeEach(() => {
-        userDAO = new UserDAO(); // Instance de UserDAO mockée
-        adminService = new AdminService(); // Instance du service à tester
+        userDAO = jest.mocked(new UserDAO()); // Cast en tant que Mocked<UserDAO>
+        adminService = new AdminService();
         adminService.userDAO = userDAO; // Injecter le DAO mocké
     });
 
     it('test_toggleUserStatus', async () => {
-        const userTest = { id: 1, active: true };
+        const userTest = { id: 1, active: true, name: "Test User", email: "test@example.com" };
         jest.spyOn(userDAO, 'getUserById').mockResolvedValue(userTest);
-        jest.spyOn(userDAO, 'updateUser').mockResolvedValue({...userTest, active: true})
-
+        jest.spyOn(userDAO, 'updateUser').mockResolvedValue({ ...userTest, active: true });
         const result = await adminService.toggleUserStatus(1, true);
 
         expect(userDAO.getUserById).toHaveBeenCalledWith(1);
@@ -26,7 +25,7 @@ describe('AdminService', () => {
         expect(result).toEqual({ ...userTest, active: true });
     });
 
-    it('test_toggleUserStatus', async () => {
+    it('test_toggleUserStatus_erreur', async () => {
         jest.spyOn(userDAO, 'getUserById').mockResolvedValue(null); // utilisateur absent
 
         await expect(adminService.toggleUserStatus(2, true)).rejects.toThrow('L\'utilisateur n\'a pas été trouvé');
