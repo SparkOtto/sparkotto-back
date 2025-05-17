@@ -10,6 +10,10 @@ class EmailService {
      * @private
      */
     private async sendEmail(to: string, subject: string, htmlContent: string): Promise<void> {
+        if (!to || to.trim() === "" || !await this.isValidEmail(to)) {
+            throw new Error("L'adresse email du destinataire est invalide.");
+        }
+
         const transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: parseInt(process.env.SMTP_PORT || '587', 10), // valeur par défaut si vide
@@ -22,7 +26,7 @@ class EmailService {
 
         try {
             await transporter.sendMail({
-                from: '"SparkOtto" <sparkOtto@example.com>', // TODO Remplacer par le bon mail
+                from: process.env.SMTP_USER,
                 to, // Adresse du destinataire
                 subject, // Sujet du mail
                 html: htmlContent, // Contenu HTML du mail
@@ -55,6 +59,11 @@ class EmailService {
                              <p>Nous sommes au regret de vous informer que votre inscription a été refusée.</p>
                              <p>N'hésitez pas à nous contacter pour plus d'informations.</p>`;
         await this.sendEmail(user.email, subject, htmlContent);
+    }
+
+    async isValidEmail(email: string): Promise<boolean> {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 }
 export default EmailService;
