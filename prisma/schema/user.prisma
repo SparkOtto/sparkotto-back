@@ -14,8 +14,8 @@ model User {
   account_locked     Boolean?
   trips_as_driver    Trips[]
   trips_as_passenger Carpooling[]
-  active             Boolean
-  deactivation_date  DateTime
+  active             Boolean?     @default(false)
+  deactivation_date  DateTime?
 }
 
 model Roles {

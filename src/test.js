@@ -3,10 +3,10 @@ const { Client } = pkg;
 
 // Créer un nouveau client PostgreSQL
 const client = new Client({
-  host: 'localhost',        // L'adresse de votre serveur PostgreSQL
+  host: '127.0.0.1',        // L'adresse de votre serveur PostgreSQL
   port: 5432,               // Le port par défaut pour PostgreSQL
-  user: 'postgres',         // Votre utilisateur PostgreSQL
-  password: 'postgres',     // Votre mot de passe PostgreSQL
+  user: 'axelmdev',         // Votre utilisateur PostgreSQL
+  password: 'axelm123',     // Votre mot de passe PostgreSQL
   database: 'sparkotto'     // Le nom de la base de données à laquelle se connecter
 });
 
