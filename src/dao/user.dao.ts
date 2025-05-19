@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, User, Roles } from '@prisma/client';
 
 class UserDAO {
   private prisma: PrismaClient;
@@ -9,6 +9,7 @@ class UserDAO {
 
   // Créer un nouvel utilisateur
   async createUser(userData: Omit<User, 'id'>): Promise<User> {
+    userData.roleId = 1;
     return this.prisma.user.create({
       data: userData,
     });
@@ -17,7 +18,7 @@ class UserDAO {
   // Obtenir un utilisateur par son ID
   async getUserById(id: number): Promise<User | null> {
     return this.prisma.user.findUnique({
-      where: { id },
+      where: { id_user: id },
     });
   }
 
@@ -36,7 +37,7 @@ class UserDAO {
   // Mettre à jour un utilisateur
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
     return this.prisma.user.update({
-      where: { id },
+      where: { id_user: id },
       data: userData,
     });
   }
@@ -44,7 +45,7 @@ class UserDAO {
   // Supprimer un utilisateur
   async deleteUser(id: number): Promise<User> {
     return this.prisma.user.delete({
-      where: { id },
+      where: { id_user: id },
     });
   }
 
@@ -53,7 +54,7 @@ class UserDAO {
     return this.prisma.user.findMany({
       where: {
         OR: [
-          { name: { contains: query, mode: 'insensitive' } },
+          { first_name: { contains: query, mode: 'insensitive' } },
           { email: { contains: query, mode: 'insensitive' } },
         ],
       },
@@ -66,6 +67,12 @@ class UserDAO {
       skip: (page - 1) * perPage,
       take: perPage,
     });
+  }
+
+  async getRoleNameByRoleId(roleId: number) : Promise<Roles | null> {
+    return this.prisma.roles.findUnique({
+      where: { id_role : roleId }
+    })
   }
 }
 

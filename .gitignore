@@ -11,3 +11,11 @@ logs/
 .idea/
 
 # Docker
+
+# intellij
+.idea/
+
+
+.env
+.env.development
+.env.production
