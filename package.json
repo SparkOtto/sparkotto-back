@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "NODE_ENV=development node index.js",
-    "prod": "NODE_ENV=production node index.js"
+    "dev": "node index.js"
   },
   "type": "module",
   "repository": {
