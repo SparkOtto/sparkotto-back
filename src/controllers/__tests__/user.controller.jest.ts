@@ -1,10 +1,9 @@
-// src/controllers/__tests__/user.controller.jest.ts
 import { Request, Response } from 'express';
 import UserController from '../user.controller';
 import UserService from '../../services/user.service';
 import { User } from '@prisma/client';
 import { describe, expect, jest } from '@jest/globals';
-import { beforeEach, it } from 'node:test';
+import {beforeEach, it} from "node:test";
 
 jest.mock('../../services/user.service');
 
@@ -21,25 +20,40 @@ describe('UserController', () => {
 
         req = {};
         res = {
-            status: jest.fn().mockReturnThis() as jest.MockedFunction<(code: number) => Response>,
-            json: jest.fn().mockReturnThis() as jest.MockedFunction<Response['json']>,
+            status: jest.fn().mockReturnThis() as jest.MockedFunction<Response['status']>,
+            json: jest.fn() as jest.MockedFunction<Response['json']>,
+            send: jest.fn() as jest.MockedFunction<Response['send']>,
         };
+    });
+
+    describe('createUser', () => {
+        it('should create a new user and return it', async () => {
+            const newUser: User = { id_user: 1, email: 'test@test.com', first_name: 'Test', password: 'hashedPassword', last_name: '', phone_number: null, roleId: 0, agency_id: null, license_number: null, failed_attempts: null, account_locked: null, active: null, deactivation_date: null };
+            userService.createUser.mockResolvedValue(newUser);
+
+            req.body = { email: 'test@test.com', first_name: 'Test', password: 'password123' };
+
+            await userController.createUser(req as Request, res as Response);
+
+            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.json).toHaveBeenCalledWith(newUser);
+        });
+
+        it('should return 400 if an error occurs', async () => {
+            userService.createUser.mockRejectedValue(new Error('Invalid data'));
+
+            req.body = { email: 'test@test.com' };
+
+            await userController.createUser(req as Request, res as Response);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Invalid data' });
+        });
     });
 
     describe('getUserById', () => {
         it('should return a user by id', async () => {
-            const user: User = {
-                id_user: 1, email: 'test@test.com', first_name: 'Test User', password: 'password123',
-                last_name: '',
-                phone_number: null,
-                roleId: 0,
-                agency_id: null,
-                license_number: null,
-                failed_attempts: null,
-                account_locked: null,
-                active: null,
-                deactivation_date: null
-            };
+            const user: User = { id_user: 1, email: 'test@test.com', first_name: 'Test', password: 'hashedPassword', last_name: '', phone_number: null, roleId: 0, agency_id: null, license_number: null, failed_attempts: null, account_locked: null, active: null, deactivation_date: null };
             userService.getUserById.mockResolvedValue(user);
 
             req.params = { id: '1' };
@@ -65,30 +79,8 @@ describe('UserController', () => {
     describe('getAllUsers', () => {
         it('should return a list of users', async () => {
             const users: User[] = [
-                {
-                    id_user: 1, email: 'test1@test.com', first_name: 'User 1', password: 'password1',
-                    last_name: '',
-                    phone_number: null,
-                    roleId: 0,
-                    agency_id: null,
-                    license_number: null,
-                    failed_attempts: null,
-                    account_locked: null,
-                    active: null,
-                    deactivation_date: null
-                },
-                {
-                    id_user: 2, email: 'test2@test.com', first_name: 'User 2', password: 'password2',
-                    last_name: '',
-                    phone_number: null,
-                    roleId: 0,
-                    agency_id: null,
-                    license_number: null,
-                    failed_attempts: null,
-                    account_locked: null,
-                    active: null,
-                    deactivation_date: null
-                },
+                { id_user: 1, email: 'test1@test.com', first_name: 'User1', password: 'hashedPassword1', last_name: '', phone_number: null, roleId: 0, agency_id: null, license_number: null, failed_attempts: null, account_locked: null, active: null, deactivation_date: null },
+                { id_user: 2, email: 'test2@test.com', first_name: 'User2', password: 'hashedPassword2', last_name: '', phone_number: null, roleId: 0, agency_id: null, license_number: null, failed_attempts: null, account_locked: null, active: null, deactivation_date: null },
             ];
             userService.getAllUsers.mockResolvedValue(users);
 
@@ -108,37 +100,27 @@ describe('UserController', () => {
         });
     });
 
-    describe('createUser', () => {
-        it('should create a new user and return it', async () => {
-            const newUser: User = {
-                id_user: 1, email: 'new@test.com', first_name: 'New User', password: 'password123',
-                last_name: 'new',
-                phone_number: null,
-                roleId: 0,
-                agency_id: null,
-                license_number: null,
-                failed_attempts: null,
-                account_locked: null,
-                active: null,
-                deactivation_date: null
-            };
-            userService.createUser.mockResolvedValue(newUser);
+    describe('deleteUser', () => {
+        it('should delete a user and return 204', async () => {
+            userService.deleteUser.mockResolvedValue({ id_user: 1, email: 'test@test.com', first_name: 'Test', password: 'hashedPassword', last_name: '', phone_number: null, roleId: 0, agency_id: null, license_number: null, failed_attempts: null, account_locked: null, active: null, deactivation_date: null });
 
-            req.body = { email: 'new@test.com', name: 'New User', password: 'password123' };
+            req.params = { id: '1' };
 
-            await userController.createUser(req as Request, res as Response);
+            await userController.deleteUser(req as Request, res as Response);
 
-            expect(res.status).toHaveBeenCalledWith(201);
-            expect(res.json).toHaveBeenCalledWith(newUser);
+            expect(res.status).toHaveBeenCalledWith(204);
+            expect(res.send).toHaveBeenCalled();
         });
 
-        it('should return 400 if required fields are missing', async () => {
-            req.body = { email: 'new@test.com' }; // Missing name and password
+        it('should return 404 if user not found', async () => {
+            userService.deleteUser.mockRejectedValue(new Error('Utilisateur non trouvé'));
 
-            await userController.createUser(req as Request, res as Response);
+            req.params = { id: '1' };
 
-            expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({ message: 'Champs requis manquants' });
+            await userController.deleteUser(req as Request, res as Response);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Utilisateur non trouvé' });
         });
     });
 });
