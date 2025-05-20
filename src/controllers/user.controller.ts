@@ -27,7 +27,7 @@ class UserController {
       const id = parseInt(req.params.id);
       const user = await this.userService.getUserById(id);
       if (user) {
-        res.json(user);
+        res.status(200).json(user);
       } else {
         res.status(404).json({ message: 'Utilisateur non trouvé' });
       }
@@ -42,7 +42,7 @@ class UserController {
       const users = await this.userService.getAllUsers();
 
       //const users = 'test';
-      res.json(users);
+      res.status(200).json(users);
     } catch (error: any) {
       res.status(500).json({ message: 'Erreur serveur pour l\'obtention de tous les utilisateurs' });
     }

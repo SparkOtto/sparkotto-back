@@ -1,8 +1,8 @@
 import UserService from '../user.service';
 import UserDAO from '../../dao/user.dao';
 import { User } from '@prisma/client';
-import {describe, expect, jest} from "@jest/globals";
-import {beforeEach, it} from "node:test";
+import {describe, expect, jest, beforeEach, it} from "@jest/globals";
+
 
 jest.mock('../../dao/user.dao');
 
@@ -29,8 +29,8 @@ describe('UserService', () => {
                 agency_id: null,
                 license_number: null,
                 failed_attempts: null,
-                account_locked: null,
-                active: null,
+                account_locked: false,
+                active: false,
                 deactivation_date: new Date("2199-04-05 10:00:00")
             };
 
@@ -39,7 +39,7 @@ describe('UserService', () => {
 
             const result = await userService.createUser(userData);
 
-            expect(result).toEqual({ id: 1, ...userData });
+            expect(result).toEqual({ ...userData });
             expect(userDAO.getUserByEmail).toHaveBeenCalledWith(userData.email);
             expect(userDAO.createUser).toHaveBeenCalledWith(userData);
         });
@@ -56,8 +56,8 @@ describe('UserService', () => {
                 id_user: 1,
                 license_number: null,
                 failed_attempts: null,
-                account_locked: null,
-                active: null,
+                account_locked: false,
+                active: false,
                 deactivation_date: new Date("2199-04-05 10:00:00"),
             };
 
@@ -82,8 +82,8 @@ describe('UserService', () => {
                 agency_id: null,
                 license_number: null,
                 failed_attempts: null,
-                account_locked: null,
-                active: null,
+                account_locked: false,
+                active: false,
                 deactivation_date: new Date("2199-04-05 10:00:00")
             };
 
