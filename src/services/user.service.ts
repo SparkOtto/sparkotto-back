@@ -66,6 +66,11 @@ class UserService {
     if (!user) {
       throw new Error('Utilisateur non trouvé');
     }
+    if (!bcrypt.compareSync(oldPassword, user.password)) {
+      throw new Error('Ancien mot de passe incorrect');
+    }
+    return this.userDAO.updateUser(id, { password: newPassword });
+  }
 }
 
 export default UserService;
