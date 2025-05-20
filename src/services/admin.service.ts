@@ -17,9 +17,12 @@ class AdminService {
         //S'assurer que l'ID de l'utilisateur existe en base
         const userExist = await this.userDAO.getUserById(id);
         if(!userExist){
-            throw new Error('L\'utilisateur n\'a pas été trouvé)');
+            throw new Error('L\'utilisateur n\'a pas été trouvé');
         }
-        const userData = {active: isActive};
+        const userData = {
+            active: isActive,
+            deactivation_date: isActive ? null : new Date() ,
+        };
         return this.userDAO.updateUser(id, userData);
     }
 }
