@@ -63,6 +63,25 @@ class AdminController {
             return res.status(500).json({error: 'Erreur lors du taitement de l\'inscription de l\'utilisateur.'});
         }
     }
+
+    async lockUnlockUser(req: Request, res: Response): Promise<Response> {
+        try {
+            const { id, isLocked } = req.body;
+
+            if (typeof id !== "number" || typeof isLocked !== "boolean") {
+                return res.status(400).json({ message: "Données invalides" });
+            } else {
+                await this.adminService.lockUnlockUser(id, isLocked);
+                return res.status(200).json({
+                    message: isLocked
+                        ? 'Le compte utilisateur a été débloqué'
+                        : 'Le compte utilisateur a été bloqué',
+                })
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Une erreur s\'est produite, si le problème perciste, veuillez contacter votre administrateur' });
+        }
+    }
 }
 
 export default AdminController;

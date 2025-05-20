@@ -10,5 +10,8 @@ router.put('/toggleUserStatus', (req: Request, res: Response) => {
 });
 router.post('/activateUserAccount', (req: Request, res: Response) => {
     adminController.activateUserAccount(req, res);
-})
+});
+router.post("/lockUnlockUser", (req: Request, res: Response) => {
+    adminController.lockUnlockUser(req, res);
+});
 export default router;

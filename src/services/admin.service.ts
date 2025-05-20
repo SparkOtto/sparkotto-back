@@ -25,5 +25,19 @@ class AdminService {
         };
         return this.userDAO.updateUser(id, userData);
     }
+
+    /**
+     * Bloquer ou débloquer un utilisateur
+     * @param id
+     * @param isLocked
+     */
+    async lockUnlockUser(id: number, isLocked: boolean): Promise<User>{
+        const userExist = await this.userDAO.getUserById(id);
+        if(!userExist){
+            throw new Error('L\'utilisateur n\'a pas été trouvé');
+        }
+        const userData = {account_locked: isLocked};
+        return this.userDAO.updateUser(id, userData);
+    }
 }
 export default AdminService;
