@@ -55,7 +55,7 @@ class AuthController {
                 phone_number: user.phone_number,
                 role: await this.userService.getRoleName(user.roleId)
             }
-            res.json({ token: token, user: userFormat });
+            res.status(200).json({ token: token, user: userFormat });
         } catch (error: any) {
             res.status(500).json({ message: 'Erreur serveur pour la connexion: ' + error });
         }
