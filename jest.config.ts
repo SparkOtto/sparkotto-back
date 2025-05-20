@@ -5,6 +5,10 @@ const config: JestConfigWithTsJest = {
   transform: {
     "^.+\\.tsx?$": ["ts-jest", {}],
   },
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "src/test.js" // Ignore ce fichier (test bdd)
+  ],
 };
 
 export default config;

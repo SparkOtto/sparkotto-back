@@ -4,8 +4,7 @@ import UserService from '../../services/user.service';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
-import { describe, expect, jest } from '@jest/globals';
-import { beforeEach, it } from 'node:test';
+import { describe, expect, jest, beforeEach, it } from '@jest/globals';
 
 jest.mock('../../services/user.service');
 jest.mock('bcryptjs');
@@ -35,13 +34,13 @@ describe('AuthController', () => {
                 id_user: 1, email: 'test@test.com', first_name: 'Test User', password: 'hashedPassword',
                 last_name: '',
                 phone_number: null,
-                roleId: 0,
+                roleId: 1,
                 agency_id: null,
                 license_number: null,
                 failed_attempts: null,
-                account_locked: null,
-                active: null,
-                deactivation_date: null
+                account_locked: false,
+                active: false,
+                deactivation_date: null,
             };
             userService.getUserByEmail.mockResolvedValue(user);
             (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
@@ -50,9 +49,16 @@ describe('AuthController', () => {
             req.body = { email: 'test@test.com', password: 'password123' };
 
             await authController.login(req as Request, res as Response);
-
+            const userFormat = {
+                id: 1,
+                first_name: 'Test User',
+                last_name: '',
+                email: 'test@test.com',
+                phone_number: null,
+                role: undefined
+            }
             expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({ token: 'token' });
+            expect(res.json).toHaveBeenCalledWith({ token: 'token', user: userFormat });
         });
 
         it('should return 401 for invalid credentials', async () => {
@@ -75,8 +81,8 @@ describe('AuthController', () => {
                 agency_id: null,
                 license_number: null,
                 failed_attempts: null,
-                account_locked: null,
-                active: null,
+                account_locked: false,
+                active: false,
                 deactivation_date: null
             };
             userService.getUserByEmail.mockResolvedValue(user);
