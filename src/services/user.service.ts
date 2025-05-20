@@ -1,5 +1,6 @@
 import {User} from '@prisma/client';
 import UserDAO from '../dao/user.dao';
+import bcrypt from "bcryptjs";
 
 class UserService {
   private userDAO: UserDAO;
@@ -60,7 +61,16 @@ class UserService {
   async getRoleName(roleId: number) {
     return this.userDAO.getRoleNameByRoleId(roleId);
   }
-
+  async changePassword(id: number, oldPassword: any, newPassword: any) {
+    const user = await this.userDAO.getUserById(id);
+    if (!user) {
+      throw new Error('Utilisateur non trouvé');
+    }
+    if (!bcrypt.compareSync(oldPassword, user.password)) {
+      throw new Error('Ancien mot de passe incorrect');
+    }
+    return this.userDAO.updateUser(id, { password: newPassword });
+  }
 }
 
 export default UserService;

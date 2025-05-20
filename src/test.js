@@ -1,4 +1,4 @@
-import pkg from 'pg';  // Importation par défaut du module pg
+const pkg = require('pg'); // Importation par défaut du module pg
 const { Client } = pkg;
 
 // Créer un nouveau client PostgreSQL

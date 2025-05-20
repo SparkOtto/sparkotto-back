@@ -16,7 +16,6 @@ class AuthController {
      * @param res
      */
     async register(req: Request, res: Response): Promise<void> {
-        //res.status(200).json(req.body);
         try {
             const { email, password, first_name, last_name, phone_number } = req.body;
             const hashedPassword = bcrypt.hashSync(password, 8);
@@ -38,7 +37,6 @@ class AuthController {
      * @param res
      */
     async login(req: Request, res: Response): Promise<void> {
-        //res.status(200).json(req.body);
         try {
             const { email, password } = req.body;
             const user = await this.userService.getUserByEmail(email);
@@ -57,7 +55,7 @@ class AuthController {
                 phone_number: user.phone_number,
                 role: await this.userService.getRoleName(user.roleId)
             }
-            res.json({ token: token, user: userFormat });
+            res.status(200).json({ token: token, user: userFormat });
         } catch (error: any) {
             res.status(500).json({ message: 'Erreur serveur pour la connexion: ' + error });
         }
@@ -69,7 +67,6 @@ class AuthController {
      * @param res
      */
     async logout(req: Request, res: Response): Promise<void> {
-
         res.status(200).json({ message: 'Déconnexion réussie' });
     }
 }
