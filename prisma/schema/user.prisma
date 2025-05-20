@@ -11,10 +11,10 @@ model User {
   agency             Agencies?    @relation(fields: [agency_id], references: [id_agency])
   license_number     String?
   failed_attempts    Int?
-  account_locked     Boolean?
+  account_locked     Boolean      @default(false)
   trips_as_driver    Trips[]
   trips_as_passenger Carpooling[]
-  active             Boolean?     @default(false)
+  active             Boolean      @default(false)
   deactivation_date  DateTime?
 }
 
