@@ -43,7 +43,7 @@ class EmailService {
      */
     async sendConfirmationEmail(user: User): Promise<void> {
         const subject = 'Confirmation de votre inscription';
-        const htmlContent = `<p>Bonjour ${user.name},</p>
+        const htmlContent = `<p>Bonjour ${user.first_name},</p>
                              <p>Nous sommes heureux de vous informer que votre inscription a été validée.</p>
                              <p>Bienvenue parmi nous !</p>`;
         await this.sendEmail(user.email, subject, htmlContent);
@@ -55,7 +55,7 @@ class EmailService {
      */
     async sendRejectionEmail(user: User): Promise<void> {
         const subject = 'Refus de votre inscription';
-        const htmlContent = `<p>Bonjour ${user.name},</p>
+        const htmlContent = `<p>Bonjour ${user.first_name},</p>
                              <p>Nous sommes au regret de vous informer que votre inscription a été refusée.</p>
                              <p>N'hésitez pas à nous contacter pour plus d'informations.</p>`;
         await this.sendEmail(user.email, subject, htmlContent);
