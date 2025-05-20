@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import UserService from '../services/user.service';
+import bcrypt from "bcryptjs";
+import Checkutils from "../command/checkutils";
 
 class UserController {
   private userService: UserService;
@@ -38,10 +40,43 @@ class UserController {
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       const users = await this.userService.getAllUsers();
+
       //const users = 'test';
       res.json(users);
     } catch (error: any) {
       res.status(500).json({ message: 'Erreur serveur pour l\'obtention de tous les utilisateurs' });
+    }
+  }
+
+  // Changer le mot de passe d'un utilisateur
+  async changePassword(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id);
+      const oldPassword = req.body.oldPassword;
+      const user = await this.userService.getUserById(id);
+
+      if (!user || !bcrypt.compareSync(oldPassword, user.password)) {
+        res.status(401).json({ message: 'Ancien mot de passe incorrect ' + oldPassword });
+        return;
+      }
+      const passwordEmpty = !Checkutils.empty(req.body.newPassword) && !Checkutils.empty(req.body.confirmPassword);
+      if(passwordEmpty && req.body.newPassword === req.body.confirmPassword) {
+        res.status(400).json({ message: 'Les mots de passe ne correspondent pas' });
+        return;
+      }
+
+
+      const newPassword  = bcrypt.hashSync(req.body.newPassword,8);
+
+
+      const result = await this.userService.changePassword(id, oldPassword, newPassword);
+      res.json({ message: 'Mot de passe mis à jour avec succès', result });
+    } catch (error: any) {
+      if (error.message === 'Utilisateur non trouvé' || error.message === 'Ancien mot de passe incorrect') {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: 'Erreur serveur lors du changement de mot de passe' });
+      }
     }
   }
 
