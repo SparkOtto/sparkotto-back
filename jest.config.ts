@@ -17,6 +17,16 @@ const config: JestConfigWithTsJest = {
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["json", "lcov", "text", "clover"],
+  reporters: [
+    "default",
+    [
+      "jest-sonar-reporter",
+      {
+        "reportFile": "coverage/sonar-report.xml",
+        "indent": 4
+      }
+    ]
+  ]
 };
 
 export default config;
