@@ -83,6 +83,101 @@ paths:
                     type: string
         '401':
           description: Identifiants invalides
+  
+  /api/vehicles:
+    get:
+      summary: Récupérer tous les véhicules (avec filtres)
+      parameters:
+        - name: available
+          in: query
+          schema:
+            type: boolean
+        - name: agency_id
+          in: query
+          schema:
+            type: integer
+        - name: minMileage
+          in: query
+          schema:
+            type: integer
+        - name: maxMileage
+          in: query
+          schema:
+            type: integer
+        - name: model
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des véhicules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+
+    post:
+      summary: Ajouter un nouveau véhicule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleInput'
+      responses:
+        '201':
+          description: Véhicule créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+
+  /api/vehicles/{id}:
+    put:
+      summary: Modifier un véhicule existant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleInput'
+      responses:
+        '200':
+          description: Véhicule modifié avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Véhicule non trouvé
+        
+    delete:
+      summary: Supprimer un véhicule par ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Véhicule supprimé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Véhicule non trouvé
+
+  
 components:
   schemas:
     User:
@@ -151,3 +246,83 @@ components:
       required:
         - email
         - password
+
+  Vehicle:
+      type: object
+      properties:
+        id_vehicle:
+          type: integer
+        brand:
+          type: string
+        model:
+          type: string
+        license_plate:
+          type: string
+        mileage:
+          type: integer
+        seat_count:
+          type: integer
+        available:
+          type: boolean
+        fuel_capacity:
+          type: integer
+          nullable: true
+        fuelTypeId:
+          type: integer
+        agency_id:
+          type: integer
+        transmissionId:
+          type: integer
+
+  VehicleInput:
+    type: object
+    properties:
+      brand:
+        type: string
+      model:
+        type: string
+      license_plate:
+        type: string
+      mileage:
+        type: integer
+      seat_count:
+        type: integer
+      available:
+        type: boolean
+      fuel_capacity:
+        type: integer
+        nullable: true
+      fuel_type:
+        type: object
+        properties:
+          connect:
+            type: object
+            properties:
+              id_fuel:
+                type: integer
+      transmission:
+        type: object
+        properties:
+          connect:
+            type: object
+            properties:
+              id_transmission:
+                type: integer
+      agency:
+        type: object
+        properties:
+          connect:
+            type: object
+            properties:
+              id_agency:
+                type: integer
+    required:
+      - brand
+      - model
+      - license_plate
+      - mileage
+      - seat_count
+      - available
+      - fuel_type
+      - transmission
+      - agency
