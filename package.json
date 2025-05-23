@@ -13,6 +13,9 @@
     "dev": " NODE_ENV=development ts-node src/index.ts",
     "prod": "NODE_ENV=production ts-node src/index.ts"
   },
+  "prisma": {
+    "schema": "prisma/schema"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SparkOtto/sparkotto-back.git"
@@ -24,7 +27,7 @@
   },
   "homepage": "https://github.com/SparkOtto/sparkotto-back#readme",
   "dependencies": {
-    "@prisma/client": "^6.4.1",
+    "@prisma/client": "6.5.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -48,7 +51,7 @@
     "eslint": "^9.21.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.9",
-    "prisma": "^6.4.1",
+    "prisma": "6.5.0",
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
