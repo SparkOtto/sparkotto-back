@@ -1,19 +1,27 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import UserService from '../services/user.service';
 import bcrypt from "bcryptjs";
 import Checkutils from "../command/checkutils";
+import AdminService from "../services/admin.service";
 
 class UserController {
   private userService: UserService;
+  private adminService: AdminService;
 
   constructor() {
     this.userService = new UserService();
+    this.adminService = new AdminService();
   }
 
   // Créer un nouvel utilisateur
   async createUser(req: Request, res: Response): Promise<void> {
     try {
       const userData = req.body;
+      const validateEmail = await this.adminService.validateDomaine(userData.email);
+      if(!validateEmail.valid){
+        res.status(400).json({ message: validateEmail.error });
+        return;
+      }
       const newUser = await this.userService.createUser(userData);
       res.status(201).json(newUser);
     } catch (error : any) {

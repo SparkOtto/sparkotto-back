@@ -10,3 +10,8 @@ model Agencies {
   key_locations   KeyLocations[]
   head_office     Boolean
 }
+
+model Domaines {
+  id_domaine   Int    @id @default(autoincrement())
+  domaine_name String @unique
+}
