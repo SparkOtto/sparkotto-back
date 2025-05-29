@@ -3,14 +3,17 @@ import UserService from '../services/user.service';
 import bcrypt from "bcryptjs";
 import Checkutils from "../command/checkutils";
 import AdminService from "../services/admin.service";
+import EmailService from "../services/email.service";
 
 class UserController {
   private userService: UserService;
   private adminService: AdminService;
+  private emailService: EmailService;
 
   constructor() {
     this.userService = new UserService();
     this.adminService = new AdminService();
+    this.emailService = new EmailService();
   }
 
   // Créer un nouvel utilisateur
@@ -24,6 +27,9 @@ class UserController {
       }
       const newUser = await this.userService.createUser(userData);
       res.status(201).json(newUser);
+
+      //email avec token
+      await this.emailService.sendToken(newUser);
     } catch (error : any) {
       res.status(400).json({ message: error.message });
     }
