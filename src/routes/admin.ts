@@ -8,7 +8,7 @@ const adminController = new AdminController();
 router.put('/toggleUserStatus', (req: Request, res: Response) => {
     adminController.toggleUserStatus(req, res);
 });
-router.post('/activateUserAccount', (req: Request, res: Response) => {
-    adminController.activateUserAccount(req, res);
-})
+router.post('/resentConfirmation', (req: Request, res: Response) => {
+    adminController.validUserWithEmail(req, res);
+});
 export default router;
