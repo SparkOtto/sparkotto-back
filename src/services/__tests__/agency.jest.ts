@@ -15,6 +15,7 @@ describe('agencyService', () => {
   describe('createAgency', () => {
     it('should create an agency if name is unique', async () => {
       mockedDao.getAgencies.mockResolvedValue([]);
+      mockedDao.getAgencyByCity.mockResolvedValue([]);
       mockedDao.createAgency.mockResolvedValue({
         id_agency: 101,
         city: 'New City',
@@ -47,7 +48,7 @@ describe('agencyService', () => {
     });
 
     it('should throw error if agency name exists', async () => {
-      mockedDao.getAgencies.mockResolvedValue([
+      mockedDao.getAgencyByCity.mockResolvedValue([
         {
           id_agency: 101,
           city: 'Existing City',
@@ -68,7 +69,7 @@ describe('agencyService', () => {
           phone: '987-654-3210',
           head_office: false,
         })
-      ).rejects.toThrow('An agency with this name already exists');
+      ).rejects.toThrow('Agency in city Existing City already exists');
     });
   });
 
