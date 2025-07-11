@@ -16,7 +16,7 @@ const config: JestConfigWithTsJest = {
     "!src/test.js"
   ],
   coverageDirectory: "coverage",
-  coverageReporters: ["json", "lcov", "text", "clover"],
+  coverageReporters: ["lcov", "text"]
 };
 
 export default config;
