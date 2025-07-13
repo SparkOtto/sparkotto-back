@@ -65,9 +65,7 @@ jobs:
     name: Deploy on Portainer
     runs-on: ubuntu-latest
     needs: [test, sonar, security]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - name: Deploy on Portainer
-        uses: newarifrh/portainer-service-webhook@v1
-        with:
-          webhook_url: https://195.15.222.167:9443/api/stacks/webhooks/ab541ad8-07cc-44d7-b2e6-7c759e0d6086
+      - name: Trigger Portainer Stack webhook
+        run: |
+          curl -X POST "https://195.15.222.167:9443/api/stacks/webhooks/${{ secrets.TOKEN_GIT }}" --insecure
