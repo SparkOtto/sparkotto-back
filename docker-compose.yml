@@ -24,6 +24,7 @@ services:
       args:
         - NODE_ENV=production
         - DATABASE_URL=postgresql://postgres:postgres@db:5432/sparkotto
+    pull_policy: build
     ports:
       - "3001:3001"
     environment:
