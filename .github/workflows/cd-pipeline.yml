@@ -70,4 +70,4 @@ jobs:
       - name: Deploy on Portainer
         uses: newarifrh/portainer-service-webhook@v1
         with:
-          webhook_url: https://195.15.222.167:9443/api/stacks/webhooks/fc4845fa-e5d5-4fe8-b420-f697055b2c29
+          webhook_url: https://195.15.222.167:9443/api/stacks/webhooks/ab541ad8-07cc-44d7-b2e6-7c759e0d6086
