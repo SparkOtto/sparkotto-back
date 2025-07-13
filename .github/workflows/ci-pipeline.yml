@@ -69,6 +69,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    needs: [test, sonar, security]
+    if: github.event_name == 'push'
     steps:
       - name: Deploy on portainer
         uses: newarifrh/portainer-service-webhook@v1
