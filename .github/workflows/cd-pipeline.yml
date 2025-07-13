@@ -1,0 +1,14 @@
+name: CD - Deploy to Portainer
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy on Portainer
+        uses: newarifrh/portainer-service-webhook@v1
+        with:
+          webhook_url: https://195.15.222.167:9443/api/stacks/webhooks/543d3794-6c39-470e-b12c-8d3a0e7c3270
