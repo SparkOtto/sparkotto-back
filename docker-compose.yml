@@ -3,6 +3,7 @@ version: "3.8"
 services:
   db:
     image: postgres:15
+    container_name: sparkotto-back-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -19,6 +20,7 @@ services:
 
   backend:
     image: sparkotto-back-backend
+    container_name: sparkotto-back-backend
     build:
       context: .
       dockerfile: ./dockerfile
