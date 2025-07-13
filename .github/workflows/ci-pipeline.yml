@@ -66,3 +66,11 @@ jobs:
 
       - name: Run File System Scan
         run: trivy fs --exit-code 1 --severity CRITICAL,HIGH .
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy on portainer
+        uses: newarifrh/portainer-service-webhook@v1
+        with:
+          webhook_url: https://195.15.222.167:9443/api/stacks/webhooks/543d3794-6c39-470e-b12c-8d3a0e7c3270
