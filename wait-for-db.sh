@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Attente que la base de données soit prête
 echo "⏳ Attente de la base de données..."
