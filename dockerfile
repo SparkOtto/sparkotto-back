@@ -6,6 +6,8 @@ WORKDIR /app
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
+RUN apk add --no-cache git
+
 COPY package.json package-lock.json ./
 RUN npm install --include=dev
 
@@ -13,7 +15,7 @@ COPY . .
 
 # Génération des types Prisma
 RUN npx prisma generate
-RUN npx prisma db push
+RUN npx prisma migrate deploy
 
 # Compilation TypeScript
 RUN npm run build:full
