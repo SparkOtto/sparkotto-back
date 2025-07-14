@@ -7,16 +7,12 @@ ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
 COPY package.json package-lock.json ./
-RUN npm install --include=dev
+RUN npm install
 
 COPY . .
 
 # Génération des types Prisma
 RUN npx prisma generate
-
-# Compilation TypeScript
-RUN npm run build:full
-RUN npm run build:seed
 
 # Étape 2 : Exécution en production
 FROM node:lts-alpine
