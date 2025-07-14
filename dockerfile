@@ -15,7 +15,7 @@ COPY . .
 
 # Génération des types Prisma
 RUN npx prisma generate
-RUN npx prisma migrate deploy
+RUN npx prisma db push
 
 # Compilation TypeScript
 RUN npm run build:full
