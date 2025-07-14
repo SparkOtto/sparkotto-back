@@ -8,6 +8,8 @@
     "build": "tsc",
     "copy-openapi": "copyfiles -u 1 src/openapi.yaml dist/",
     "build:full": "npm run build && npm run copy-openapi",
+    "build:seed": "tsc prisma/seed.ts --outDir dist",
+    "seed": "node dist/prisma/seed.js",
     "start": "node --experimental-specifier-resolution=node dist/index.js",
     "watch" : "npm run build:full & npm run start",
 
@@ -15,7 +17,7 @@
     "prod": "NODE_ENV=production ts-node src/index.ts"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts",
+    "seed": "npm run seed",
     "schema": "prisma/schema"
   },
   "repository": {
