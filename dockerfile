@@ -6,6 +6,8 @@ WORKDIR /app
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
+RUN apk add --no-cache git
+
 COPY package.json package-lock.json ./
 RUN npm install --include=dev
 
