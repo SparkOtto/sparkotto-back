@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import {User} from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { google} from "googleapis";
 
 class EmailService {
 
@@ -10,6 +11,22 @@ class EmailService {
             {userId: user.id_user},
             secretKey,
             { expiresIn: "12h"});
+    }
+
+    async getAccessToken(): Promise<string> {
+        const oAuth2Client = new google.auth.OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            "https://localhost/oauth2callback.com" // L’URI que tu as défini
+        );
+
+        oAuth2Client.setCredentials({
+            refresh_token: process.env.GOOGLE_REFRESH_TOKEN
+        });
+
+        const { token } = await oAuth2Client.getAccessToken();
+        return token || "";
+
     }
 
     /**
@@ -23,19 +40,23 @@ class EmailService {
             throw new Error("L'adresse email du destinataire est invalide.");
         }
 
+        const accessToken = await this.getAccessToken();
+
         const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: parseInt(process.env.SMTP_PORT || '587', 10), // valeur par défaut si vide
-            secure: process.env.SMTP_SECURE === 'true', // transforme la valeur en boolean au lieu de string
+            service: 'gmail',
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
+                type: 'OAuth2',
+                user: process.env.GMAIL_USER,
+                clientId: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+                accessToken
             }
         });
 
         try {
             await transporter.sendMail({
-                from: process.env.SMTP_USER,
+                from: process.env.GMAIL_USER,
                 to, // Adresse du destinataire
                 subject, // Sujet du mail
                 html: htmlContent, // Contenu HTML du mail

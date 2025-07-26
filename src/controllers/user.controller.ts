@@ -21,6 +21,7 @@ class UserController {
     try {
       const userData = req.body;
       const validateEmail = await this.adminService.validateDomaine(userData.email);
+      console.log('Corps reçu dans createUser :', req.body);
       if(!validateEmail.valid){
         res.status(400).json({ message: validateEmail.error });
         return;

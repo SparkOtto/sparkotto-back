@@ -11,7 +11,8 @@
     "start": "node --experimental-specifier-resolution=node dist/index.js",
     "watch": "npm run build:full & npm run start",
     "dev": " NODE_ENV=development ts-node src/index.ts",
-    "prod": "NODE_ENV=production ts-node src/index.ts"
+    "prod": "NODE_ENV=production ts-node src/index.ts",
+    "wdev": "concurrently \"npm run watch\" \"npx prisma studio\""
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-openapi-validator": "^5.4.6",
+    "googleapis": "^154.0.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.4",
     "openapi-typescript": "^7.6.1",
@@ -46,6 +48,7 @@
     "@types/node": "^22.13.10",
     "@types/nodemailer": "^6.4.17",
     "@types/swagger-ui-express": "^4.1.8",
+    "concurrently": "^9.2.0",
     "copyfiles": "^2.4.1",
     "eslint": "^9.21.0",
     "jest": "^29.7.0",
