@@ -53,12 +53,12 @@ export const vehicleDao = {
                     }
                     : {}),
             },
-            include: { fuel_type: true },
+            include: { fuel_type: true, transmission: true, agency: true },
         });
     },
 
     async getVehicleById(id_vehicle: number): Promise<Vehicles | null> {
-        return await prisma.vehicles.findUnique({where: {id_vehicle}, include: { fuel_type: true },});
+        return await prisma.vehicles.findUnique({where: {id_vehicle}, include: { fuel_type: true, transmission: true, agency: true }});
     },
     async createVehicleStateRecord(param: {
         id_vehicle: number;
