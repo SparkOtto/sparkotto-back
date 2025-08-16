@@ -25,6 +25,22 @@ class VehicleController {
     }
   }
 
+  // GET /api/vehicles/:id
+  async getVehicleById(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id);
+      const vehicle = await vehicleService.getVehicleById(id);
+      if (vehicle) {
+        res.status(200).json(vehicle);
+      } else {
+        res.status(404).json({ message: 'Vehicle not found' });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+
   // GET /api/vehicles
   async getVehicles(req: Request, res: Response): Promise<void> {
     try {
