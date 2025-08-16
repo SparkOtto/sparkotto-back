@@ -21,7 +21,7 @@ class AdminController {
      */
     async toggleUserStatus(req: Request, res: Response): Promise<Response> {
         const id = parseInt(req.params.id);
-        const isActive = req.body;
+        const isActive = req.body.isActive;
         try {
             const updateUser = await this.adminService.toggleUserStatus(id, isActive);
             return res.status(200).json(updateUser);
