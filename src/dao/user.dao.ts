@@ -74,8 +74,15 @@ class UserDAO {
       where: { id_role : roleId }
     })
   }
+
+  async getRoleByUserId(userId: number): Promise<Roles | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id_user: userId },
+      include: { role: true },
+    });
+    return user?.role || null;
+  }
 }
 
-
-
 export default UserDAO;
+export const getRoleByUserId = new UserDAO().getRoleByUserId.bind(new UserDAO());

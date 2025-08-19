@@ -1,17 +1,37 @@
 import express, { Request, Response } from 'express';
 import AdminController from "../controllers/admin.controller";
+import { authenticateToken, CustomRequest } from '../middlewares/auth';
+import { authorizeRoles } from '../middlewares/role';
 
 const router = express.Router();
 const adminController = new AdminController();
 
 //Routes pour le menu administrateur
-router.put('/toggleUserStatus/:id', (req: Request, res: Response) => {
-    adminController.toggleUserStatus(req, res);
-});
-router.post('/activateUserAccount', (req: Request, res: Response) => {
-    adminController.activateUserAccount(req, res);
-});
-router.post("/lockUnlockUser", (req: Request, res: Response) => {
-    adminController.lockUnlockUser(req, res);
-});
+router.put(
+    '/toggleUserStatus/:id',
+    authenticateToken,
+    authorizeRoles(['admin']),
+    (req, res) => {
+        adminController.toggleUserStatus(req, res);
+    }
+);
+
+router.post(
+    '/activateUserAccount',
+    authenticateToken,
+    authorizeRoles(['admin']),
+    (req, res) => {
+        adminController.activateUserAccount(req, res);
+    }
+);
+
+router.post(
+    "/lockUnlockUser",
+    authenticateToken,
+    authorizeRoles(['admin']),
+    (req, res) => {
+        adminController.lockUnlockUser(req, res);
+    }
+);
+
 export default router;
