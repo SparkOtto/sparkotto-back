@@ -12,10 +12,10 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  // Récupération du token depuis le cookie "token"
+  const token = req.cookies.token;
 
-  console.log('Authenticating token:', token);
+  console.log('Token reçu:', token);
 
   if (!token) {
     res.status(401).json({ message: 'Token manquant' });
@@ -28,6 +28,5 @@ export const authenticateToken = (
     next();
   } catch (err) {
     res.status(403).json({ message: 'Token invalide' });
-    return;
   }
 }
