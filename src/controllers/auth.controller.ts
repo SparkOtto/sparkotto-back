@@ -46,7 +46,29 @@ class AuthController {
                 return;
             }
 
+            // Vérification si le compte est verrouillé
+            if (user.account_locked) {
+                res.status(401).json({ message: 'Compte verrouillé' });
+                return;
+            }
+
+            // Vérification si le compte est actif
+            if (!user.active) {
+                res.status(401).json({ message: 'Compte inactif' });
+                return;
+            }
+
             const token = jwt.sign({ id: user.id_user }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
+            // Envoi du cookie sécurisé avec token
+            res.cookie('token', token, {
+                httpOnly: true,
+                maxAge: 3600000,
+                path: '/',
+                secure: false,      // Important: false en dev local quand pas HTTPS
+                sameSite: 'lax',    // 'lax' pour local, sinon 'none' + HTTPS nécessaire
+            });
+
             const userFormat = {
                 id: user.id_user,
                 first_name: user.first_name,
@@ -67,8 +89,49 @@ class AuthController {
      * @param res
      */
     async logout(req: Request, res: Response): Promise<void> {
-        res.status(200).json({ message: 'Déconnexion réussie' });
+        try {
+            res.clearCookie('token', {
+                path: '/',          
+                httpOnly: true,     
+                secure: false,      
+                sameSite: 'lax',   
+            });
+
+            res.status(200).json({ message: 'Déconnexion réussie' });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Erreur lors de la déconnexion : ' + error.message });
+        }
     }
+
+    /**
+     * Vérification du token utilisateur
+     * @param req
+     * @param res
+     */
+    async verifyToken(req: Request, res: Response): Promise<void> {
+        const token = req.cookies.token;
+
+        console.log("Token reçu :", token);
+
+        if (!token) {
+            res.status(401).json({ valid: false, message: 'Token manquant' });
+            return;
+        }
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role: string };
+
+            // Vérification de l'existence de l'utilisateur
+            res.status(200).json({
+                valid: true,
+                id: decoded.id,
+                role: decoded.role,
+            });
+        } catch (error) {
+            res.status(403).json({ valid: false, message: 'Token invalide' });
+        }
+    }
+
 }
 
 export default AuthController;
