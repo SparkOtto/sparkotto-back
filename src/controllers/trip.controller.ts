@@ -28,4 +28,4 @@ class TripController {
     }
 }
 
-export default new TripController();
+export default TripController;
