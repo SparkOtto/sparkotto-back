@@ -13,8 +13,16 @@ export type VehicleFilterParams = {
 };
 
 export const vehicleDao = {
-    async createVehicle(data: Omit<Vehicles, 'id_vehicle'>): Promise<Vehicles> {
-        return await prisma.vehicles.create({data});
+    async createVehicle(data: Omit<Vehicles, 'id_vehicle'> & { fuelTypeId: number; transmissionId: number; agency_id: number }): Promise<Vehicles> {
+        const { fuelTypeId, transmissionId, agency_id, ...vehicleData } = data;
+        return await prisma.vehicles.create({
+            data: {
+                ...vehicleData,
+                agency: { connect: { id_agency: agency_id } },
+                fuel_type: { connect: { id_fuel: fuelTypeId } },
+                transmission: { connect: { id_transmission: transmissionId } },
+            },
+        });
     },
 
     async updateVehicle(id_vehicle: number, data: Partial<Omit<Vehicles, 'id_vehicle'>>): Promise<Vehicles | null> {
