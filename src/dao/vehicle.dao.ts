@@ -13,7 +13,7 @@ export type VehicleFilterParams = {
 };
 
 export const vehicleDao = {
-    async createVehicle(data: Prisma.VehiclesCreateInput): Promise<Vehicles> {
+    async createVehicle(data: Omit<Vehicles, 'id_vehicle'>): Promise<Vehicles> {
         return await prisma.vehicles.create({data});
     },
 
@@ -60,22 +60,24 @@ export const vehicleDao = {
     async getVehicleById(id_vehicle: number): Promise<Vehicles | null> {
         return await prisma.vehicles.findUnique({where: {id_vehicle}, include: { fuel_type: true, transmission: true, agency: true }});
     },
-    async createVehicleStateRecord(param: {
+    createVehicleStateRecord: async function (param: {
         id_vehicle: number;
         state_date: Date;
         state_type: string;
         internal_cleanliness: number;
         external_cleanliness: number;
-        comment: string | undefined
+        comment: string | undefined;
     }) {
         return prisma.vehicleStateRecords.create({
             data: {
-                id_vehicle: param.id_vehicle,
                 state_date: param.state_date,
                 state_type: param.state_type,
                 internal_cleanliness: param.internal_cleanliness,
                 external_cleanliness: param.external_cleanliness,
                 comment: param.comment || null,
+                vehicle: {
+                    connect: { id_vehicle: param.id_vehicle }, // Utilisation correcte de connect
+                },
             },
         });
     },

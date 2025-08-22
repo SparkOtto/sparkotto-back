@@ -7,9 +7,16 @@ class CarpoolingDAO {
         this.prisma = new PrismaClient();
     }
 
-    async createCarpooling(data: { id_trip: number; id_passenger: number; reserved_seats: number }) {
+    async createCarpooling(data: { id_trip: number; id_passenger: number }) {
         return this.prisma.carpooling.create({
-            data,
+            data: {
+                trip: {
+                    connect: { id_trip: data.id_trip }, // Connexion au voyage existant
+                },
+                passenger: {
+                    connect: { id_user: data.id_passenger }, // Connexion au passager existant
+                },
+            },
         });
     }
 

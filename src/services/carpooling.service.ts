@@ -7,10 +7,7 @@ class CarpoolingService {
         this.dao = new CarpoolingDAO();
     }
 
-    async createCarpooling(data: { id_trip: number; id_passenger: number; reserved_seats: number }) {
-        if (data.reserved_seats <= 0) {
-            throw new Error('Le nombre de places réservées doit être supérieur à 0.');
-        }
+    async createCarpooling(data: { id_trip: number; id_passenger: number }) {
         return this.dao.createCarpooling(data);
     }
 

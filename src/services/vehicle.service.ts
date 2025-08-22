@@ -3,7 +3,7 @@ import {Vehicles} from '@prisma/client';
 import {Prisma} from '@prisma/client';
 
 export const vehicleService = {
-    async createVehicle(input: Prisma.VehiclesCreateInput): Promise<Vehicles> {
+    async createVehicle(input: Vehicles): Promise<Vehicles> {
         // Vérifie unicité de la plaque
         const existing = await vehicleDao.getVehicles({});
         if (existing.find(v => v.license_plate === input.license_plate)) {
