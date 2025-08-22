@@ -12,7 +12,7 @@ export const vehicleService = {
         return await vehicleDao.createVehicle(input);
     },
 
-    async updateVehicle(id: number, update: Partial<Omit<Vehicles, 'id_vehicle'>>): Promise<Vehicles> {
+    async updateVehicle(id: number, update: Vehicles): Promise<Vehicles> {
         const current = await vehicleDao.getVehicleById(id);
         if (!current) {
             throw new Error(`Vehicle with id ${id} not found`);

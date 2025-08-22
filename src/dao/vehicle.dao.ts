@@ -26,10 +26,22 @@ export const vehicleDao = {
         });
     },
 
-    async updateVehicle(id_vehicle: number, data: Partial<Omit<Vehicles, 'id_vehicle'>>): Promise<Vehicles | null> {
+    async updateVehicle(
+        id_vehicle: number,
+        data: Partial<Omit<Vehicles, 'id_vehicle'>> & { fuelTypeId?: number; transmissionId?: number }
+    ): Promise<Vehicles> {
+        // Destructure and remove custom fields from data
+        const { fuelTypeId, transmissionId, agency_id, ...vehicleData } = data;
+
         return await prisma.vehicles.update({
-            where: {id_vehicle},
-            data,
+            where: { id_vehicle },
+            data: {
+                ...vehicleData,
+                ...(agency_id !== undefined && { agency: { connect: { id_agency: agency_id } } }),
+                ...(fuelTypeId !== undefined && { fuel_type: { connect: { id_fuel: fuelTypeId } } }),
+                ...(transmissionId !== undefined && { transmission: { connect: { id_transmission: transmissionId } } }),
+            },
+            include: { fuel_type: true, transmission: true, agency: true },
         });
     },
 
