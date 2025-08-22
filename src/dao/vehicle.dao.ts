@@ -22,6 +22,7 @@ export const vehicleDao = {
                 fuel_type: { connect: { id_fuel: fuelTypeId } },
                 transmission: { connect: { id_transmission: transmissionId } },
             },
+            include: { fuel_type: true, transmission: true, agency: true },
         });
     },
 
