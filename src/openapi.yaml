@@ -264,6 +264,118 @@ paths:
         '404':
           description: Véhicule non trouvé
 
+  # === RESTITUTION DE VÉHICULE ===
+  /api/trips/return/{tripId}:
+    put:
+      summary: Restituer un véhicule (terminer un voyage)
+      description: Permet à un utilisateur de restituer un véhicule en fin de voyage avec le kilométrage final, l'emplacement du véhicule et l'emplacement des clés
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID du voyage à terminer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleReturnInput'
+      responses:
+        '200':
+          description: Véhicule restitué avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleReturnResponse'
+        '400':
+          description: Données manquantes ou invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Voyage non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # === EMPLACEMENTS DE CLÉS ===
+  /api/key/locations/all:
+    get:
+      summary: Récupérer tous les emplacements de clés
+      description: Récupère la liste de tous les emplacements de clés disponibles dans toutes les agences
+      responses:
+        '200':
+          description: Liste des emplacements de clés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KeyLocation'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/key/locations/agency/{agency_id}:
+    get:
+      summary: Récupérer les emplacements de clés par agence
+      description: Récupère la liste des emplacements de clés disponibles pour une agence spécifique
+      parameters:
+        - name: agency_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de l'agence
+      responses:
+        '200':
+          description: Liste des emplacements de clés pour l'agence
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KeyLocation'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # === VOYAGE ACTIF ===
+  /api/vehicles/active-trip/{vehicleId}:
+    get:
+      summary: Récupérer le voyage actif d'un véhicule
+      description: Récupère les informations du voyage actuellement en cours pour un véhicule donné
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID du véhicule
+      responses:
+        '200':
+          description: Voyage actif du véhicule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '404':
+          description: Aucun voyage actif trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   
 components:
   schemas:
@@ -413,3 +525,263 @@ components:
       - fuel_type
       - transmission
       - agency
+
+  # === SCHÉMAS POUR LA RESTITUTION DE VÉHICULE ===
+  VehicleReturnInput:
+    type: object
+    description: Données requises pour la restitution d'un véhicule
+    properties:
+      mileage:
+        type: integer
+        description: Kilométrage du véhicule au retour
+        minimum: 0
+        example: 52000
+      current_location_agency_id:
+        type: integer
+        description: ID de l'agence où se trouve actuellement le véhicule
+        example: 2
+      key_location_id:
+        type: integer
+        description: ID de l'emplacement où les clés ont été déposées
+        example: 3
+      vehicle_state:
+        type: object
+        description: État des lieux du véhicule à l'arrivée (optionnel)
+        properties:
+          internal_cleanliness:
+            type: integer
+            minimum: 1
+            maximum: 5
+            description: Note de propreté intérieure (1 = très sale, 5 = impeccable)
+            example: 4
+          external_cleanliness:
+            type: integer
+            minimum: 1
+            maximum: 5
+            description: Note de propreté extérieure (1 = très sale, 5 = impeccable)
+            example: 3
+          comment:
+            type: string
+            description: Commentaires sur l'état du véhicule
+            example: "Quelques rayures sur le côté droit"
+    required:
+      - mileage
+      - current_location_agency_id
+      - key_location_id
+
+  VehicleReturnResponse:
+    type: object
+    properties:
+      trip:
+        $ref: '#/components/schemas/TripWithDetails'
+      message:
+        type: string
+        example: "Véhicule restitué avec succès"
+
+  # === SCHÉMAS POUR LES VOYAGES ===
+  Trip:
+    type: object
+    properties:
+      id_trip:
+        type: integer
+        example: 1
+      id_vehicle:
+        type: integer
+        example: 1
+      id_driver:
+        type: integer
+        example: 1
+      id_used_key:
+        type: integer
+        example: 1
+      start_date:
+        type: string
+        format: date-time
+        example: "2024-01-01T10:00:00Z"
+      end_date:
+        type: string
+        format: date-time
+        example: "2024-01-01T18:00:00Z"
+      departure_agency:
+        type: integer
+        example: 1
+      arrival_agency:
+        type: integer
+        example: 2
+      reservation_status:
+        type: string
+        enum: [confirmed, in_progress, completed, cancelled]
+        example: "confirmed"
+      carpooling:
+        type: boolean
+        example: false
+      meeting_time:
+        type: string
+        format: date-time
+        nullable: true
+      meeting_comment:
+        type: string
+        nullable: true
+
+  TripWithDetails:
+    allOf:
+      - $ref: '#/components/schemas/Trip'
+      - type: object
+        properties:
+          vehicle:
+            $ref: '#/components/schemas/Vehicle'
+          driver:
+            $ref: '#/components/schemas/User'
+          key:
+            $ref: '#/components/schemas/KeyWithLocation'
+
+  # === SCHÉMAS POUR LES CLÉS ET EMPLACEMENTS ===
+  KeyLocation:
+    type: object
+    description: Emplacement de rangement des clés
+    properties:
+      id_key_location:
+        type: integer
+        example: 1
+      agency_id:
+        type: integer
+        example: 1
+      office:
+        type: string
+        description: Nom du bureau ou emplacement spécifique
+        example: "Bureau principal"
+      comment:
+        type: string
+        nullable: true
+        description: Commentaire ou instructions spécifiques
+        example: "Au bureau d'accueil, armoire de gauche"
+      agency:
+        $ref: '#/components/schemas/Agency'
+
+  KeyWithLocation:
+    type: object
+    properties:
+      id_key:
+        type: integer
+        example: 1
+      key_name:
+        type: string
+        example: "Clé véhicule Toyota Yaris"
+      keyLocationId:
+        type: integer
+        example: 3
+      vehicleKeyId:
+        type: integer
+        nullable: true
+        example: 1
+      key_location:
+        $ref: '#/components/schemas/KeyLocation'
+
+  # === SCHÉMAS POUR L'ÉTAT DES LIEUX ===
+  VehicleStateInput:
+    type: object
+    description: Données pour créer un état des lieux de véhicule
+    properties:
+      id_vehicle:
+        type: integer
+        description: ID du véhicule
+        example: 1
+      state_type:
+        type: string
+        enum: [departure, arrival]
+        description: Type d'état des lieux (départ ou arrivée)
+        example: "departure"
+      internal_cleanliness:
+        type: integer
+        minimum: 1
+        maximum: 5
+        description: Note de propreté intérieure (1 = très sale, 5 = impeccable)
+        example: 4
+      external_cleanliness:
+        type: integer
+        minimum: 1
+        maximum: 5
+        description: Note de propreté extérieure (1 = très sale, 5 = impeccable)
+        example: 3
+      comment:
+        type: string
+        description: Commentaires sur l'état du véhicule
+        example: "Véhicule en bon état général"
+    required:
+      - id_vehicle
+      - state_type
+      - internal_cleanliness
+      - external_cleanliness
+
+  VehicleStateResponse:
+    type: object
+    properties:
+      id_state_record:
+        type: integer
+        example: 1
+      id_vehicle:
+        type: integer
+        example: 1
+      state_date:
+        type: string
+        format: date-time
+        example: "2024-01-15T14:30:00Z"
+      state_type:
+        type: string
+        enum: [departure, arrival]
+        example: "departure"
+      internal_cleanliness:
+        type: integer
+        minimum: 1
+        maximum: 5
+        example: 4
+      external_cleanliness:
+        type: integer
+        minimum: 1
+        maximum: 5
+        example: 3
+      comment:
+        type: string
+        nullable: true
+        example: "Véhicule en bon état général"
+      vehicle:
+        type: object
+        properties:
+          brand:
+            type: string
+            example: "Toyota"
+          model:
+            type: string
+            example: "Prius"
+          license_plate:
+            type: string
+            example: "AB-123-CD"
+
+  # === SCHÉMA D'AGENCE ===
+  Agency:
+    type: object
+    properties:
+      id_agency:
+        type: integer
+        example: 1
+      city:
+        type: string
+        example: "Paris"
+      address:
+        type: string
+        example: "123 Rue de la Paix"
+      postal_code:
+        type: string
+        example: "75001"
+      phone:
+        type: string
+        example: "01 23 45 67 89"
+
+  # === SCHÉMA D'ERREUR GÉNÉRIQUE ===
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+        description: Description de l'erreur
+        example: "Données manquantes ou invalides"

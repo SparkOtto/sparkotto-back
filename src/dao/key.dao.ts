@@ -10,7 +10,11 @@ class KeyDAO {
     async findAll() {
         return this.prisma.keys.findMany({
             include: {
-                key_location: true,
+                key_location: {
+                    include: {
+                        agency: true
+                    }
+                },
                 vehicle_key: true,
                 trips: true,
             },
@@ -21,7 +25,11 @@ class KeyDAO {
         return this.prisma.keys.findUnique({
             where: { id_key },
             include: {
-                key_location: true,
+                key_location: {
+                    include: {
+                        agency: true
+                    }
+                },
                 vehicle_key: true,
                 trips: true,
             },

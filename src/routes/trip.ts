@@ -7,5 +7,9 @@ const tripController = new TripController();
 
 router.post('/', authenticateToken, (req, res) => tripController.createTrip(req, res));
 router.get('/vehicle/:id_vehicle', authenticateToken, (req,res) => tripController.getTripsByVehicle(req, res));
+router.put('/return/:tripId', authenticateToken, (req, res) => tripController.returnVehicle(req, res));
+
+// Route pour créer un état des lieux de départ
+router.post('/:tripId/departure-state', authenticateToken, (req, res) => tripController.createDepartureVehicleState(req, res));
 
 export default router;
