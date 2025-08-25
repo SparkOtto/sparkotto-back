@@ -1,7 +1,10 @@
 import nodemailer from "nodemailer";
 import {User} from "@prisma/client";
 import jwt from "jsonwebtoken";
-import { google} from "googleapis";
+import {google} from "googleapis";
+import user from "../routes/user";
+import Mail from "nodemailer/lib/mailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 class EmailService {
 
@@ -10,21 +13,21 @@ class EmailService {
         return jwt.sign(
             {userId: user.id_user},
             secretKey,
-            { expiresIn: "12h"});
+            {expiresIn: "12h"});
     }
 
     async getAccessToken(): Promise<string> {
         const oAuth2Client = new google.auth.OAuth2(
             process.env.GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
-            "https://localhost/oauth2callback.com" // L’URI que tu as défini
+            process.env.GOOGLE_REDIRECT_URI,
         );
 
         oAuth2Client.setCredentials({
             refresh_token: process.env.GOOGLE_REFRESH_TOKEN
         });
 
-        const { token } = await oAuth2Client.getAccessToken();
+        const {token} = await oAuth2Client.getAccessToken();
         return token || "";
 
     }
@@ -39,9 +42,10 @@ class EmailService {
         if (!to || to.trim() === "" || !await this.isValidEmail(to)) {
             throw new Error("L'adresse email du destinataire est invalide.");
         }
-
+        // générer le token qui permet d'envoyer le mail
         const accessToken = await this.getAccessToken();
 
+        // Créer le transporteur SMTP avec OAuth2
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -50,24 +54,32 @@ class EmailService {
                 clientId: process.env.GOOGLE_CLIENT_ID,
                 clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                 refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-                accessToken
-            }
+                accessToken: accessToken,
+            },
+            tls: {rejectUnauthorized: false} // Accepter les certificats auto-signés
         });
 
         try {
-            await transporter.sendMail({
+            const sendMailPromise = transporter.sendMail({
                 from: process.env.GMAIL_USER,
-                to, // Adresse du destinataire
-                subject, // Sujet du mail
-                html: htmlContent, // Contenu HTML du mail
+                to,
+                subject,
+                // text: "Message texte",
+                html: htmlContent,
             });
+
+            const infoMail = await Promise.race([
+                sendMailPromise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout SMTP')), 5000))
+            ]);
+            console.log('sendEmail infoMail : ', infoMail);
         } catch (error) {
             console.error("Erreur lors de l'envoi de l'email :", error);
             throw new Error('Échec de l\'envoi de l\'email.');
         }
     }
 
-    async sendToken (user: User): Promise<void> {
+    async sendToken(user: User): Promise<void> {
         const subjectEmail = "Confirmez votre inscription à Spark oTTo";
         const token = this.generateConfirmeToken(user);
         const confirmationLink = `${process.env.APP_URL}/confirm?token=${token}`;
@@ -80,7 +92,10 @@ class EmailService {
             <p><a href="${confirmationLink}">Confirmer mon inscription</a></p>
             <p>Ce lien et valide pendant 12 heures</p>
         `;
+        console.log('service : appel de la méthode sendEmail');
         await this.sendEmail(user.email, subjectEmail, htmlContent);
+        console.log('sendEmail : utilisateur =', user);
+        console.log('sendEmail : lien =', confirmationLink);
 
     }
 
@@ -113,4 +128,5 @@ class EmailService {
         return emailRegex.test(email);
     }
 }
+
 export default EmailService;

@@ -12,7 +12,8 @@
     "watch": "npm run build:full & npm run start",
     "dev": " NODE_ENV=development ts-node src/index.ts",
     "prod": "NODE_ENV=production ts-node src/index.ts",
-    "wdev": "concurrently \"npm run watch\" \"npx prisma studio\""
+    "wdev": "concurrently \"npm run watch\" \"npx prisma studio\"",
+    "generate-token": "ts-node src/command/generateTokenOauth.ts"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "express-openapi-validator": "^5.4.6",
     "googleapis": "^154.0.0",
     "jsonwebtoken": "^9.0.2",
+    "maildev": "^2.2.1",
     "nodemailer": "^7.0.4",
     "openapi-typescript": "^7.6.1",
     "pg": "^8.13.3",
@@ -56,6 +58,6 @@
     "prisma": "^6.4.1",
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.2"
   }
 }

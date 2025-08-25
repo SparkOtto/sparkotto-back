@@ -11,7 +11,5 @@ router.put('/toggleUserStatus', (req: Request, res: Response) => {
 router.post('/resentConfirmation', (req: Request, res: Response) => {
     adminController.validUserWithEmail(req, res);
 });
-router.post('/testEmail', (req: Request, res: Response) => {
-    adminController.testEmail(req, res);
-});
+
 export default router;

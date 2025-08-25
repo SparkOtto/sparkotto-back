@@ -55,28 +55,24 @@ class AdminController {
      * @param res
      */
     async toggleUserStatus(req: Request, res: Response): Promise<Response> {
-        const id = parseInt(req.params.id);
-        const isActive = req.body;
         try {
+            const token = req.query.token as string;
+            if (!token) {
+                return res.status(400).json({ error: 'Token manquant' });
+            }
+
+            const decoded = jwt.verify(token, process.env.JWT_SECRET!) as unknown as { id: number };
+            const id = decoded.id;
+
+            const isActive = req.body;
+
             const updateUser = await this.adminService.toggleUserStatus(id, isActive);
             return res.status(200).json(updateUser);
         } catch (error) {
-            return res.status(500).json({error: 'Erreur lors de la mise à jour de l\'utilisateur'});
+            return res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'utilisateur ou token invalide' });
         }
     }
 
-    /**
-     * route pour tester l'envoi de mail avec postman
-     */
-    async testEmail(req: Request, res: Response): Promise<Response> {
-        const user =req.body;
-        try {
-            const sendMail = await this.emailService.sendConfirmationEmail(user);
-            return res.status(200).json('lolo');
-        } catch (error) {
-            return res.status(500).json({error: 'test en erreur'});
-        }
-    }
 }
 
 export default AdminController;

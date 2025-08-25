@@ -27,10 +27,11 @@ class UserController {
         return;
       }
       const newUser = await this.userService.createUser(userData);
-      res.status(201).json(newUser);
 
       //email avec token
+      console.log('controller : Appel de la méthode sendToken');
       await this.emailService.sendToken(newUser);
+      res.status(201).json(newUser);
     } catch (error : any) {
       res.status(400).json({ message: error.message });
     }
