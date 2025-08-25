@@ -18,3 +18,6 @@ logs/
 .env
 .env.development
 .env.production
+/coverage/lcov-report/src/dao/domaine.dao.ts.html
+/coverage/lcov-report/src/services/essaisEnvoiEmail.service.ts.html
+/coverage/lcov-report/src/command/generateTokenOauth.ts.html
