@@ -26,6 +26,20 @@ class KeyController {
         }
     }
 
+    async getKeyByVehicleId(req: Request, res: Response): Promise<void> {
+        try {
+            const { id_vehicle } = req.params;
+            const key = await this.service.getKeyByVehicleId(Number(id_vehicle));
+            if (key) {
+                res.status(200).json(key);
+            } else {
+                res.status(404).json({ error: 'Clé non trouvée pour ce véhicule.' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Erreur lors de la récupération de la clé.' });
+        }
+    }
+
     async getKeyById(req: Request, res: Response): Promise<void> {
         try {
             const { id_key } = req.params;
@@ -59,7 +73,7 @@ class KeyController {
             res.status(400).json({ error: 'Erreur lors de la suppression de la clé.' });
         }
     }
-
+  
     async getKeyLocationsByAgency(req: Request, res: Response): Promise<void> {
         try {
             const { agency_id } = req.params;

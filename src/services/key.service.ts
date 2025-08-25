@@ -15,6 +15,10 @@ class KeyService {
         return this.keyDAO.findById(id_key);
     }
 
+    async getKeyByVehicleId(id_vehicle: number) {
+        return this.keyDAO.findByVehicleId(id_vehicle);
+    }
+
     async updateKey(id_key: number, data: { key_name?: string; keyLocationId?: number; vehicleKeyId?: number }) {
         return this.keyDAO.update(id_key, data);
     }
