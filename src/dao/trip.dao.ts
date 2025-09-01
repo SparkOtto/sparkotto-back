@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { ACTIVE_STATUSES } from '../models/tripStatus';
 
 class TripDAO {
     private prisma: PrismaClient;
@@ -32,6 +33,53 @@ class TripDAO {
                 vehicle: true,
                 driver: true,
                 carpoolings: true,
+            },
+        });
+    }
+
+    async getTripById(tripId: number) {
+        return this.prisma.trips.findUnique({
+            where: { id_trip: tripId },
+            include: {
+                vehicle: true,
+                driver: true,
+                key: true,
+                carpoolings: true,
+            },
+        });
+    }
+
+    async getActiveTripByVehicle(id_vehicle: number) {
+        return this.prisma.trips.findFirst({
+            where: {
+                id_vehicle,
+                reservation_status: {
+                    in: ACTIVE_STATUSES
+                },
+                end_date: {
+                    gte: new Date()
+                }
+            },
+            include: {
+                vehicle: true,
+                driver: true,
+                key: true,
+            },
+        });
+    }
+
+    async updateTrip(tripId: number, data: {
+        end_date?: Date;
+        arrival_agency?: number;
+        reservation_status?: string;
+    }) {
+        return this.prisma.trips.update({
+            where: { id_trip: tripId },
+            data,
+            include: {
+                vehicle: true,
+                driver: true,
+                key: true,
             },
         });
     }
