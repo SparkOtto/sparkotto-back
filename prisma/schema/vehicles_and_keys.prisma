@@ -45,7 +45,7 @@ model Keys {
   key_location  KeyLocations @relation(fields: [keyLocationId], references: [id_key_location])
   keyLocationId Int
   vehicle_key   Vehicles?    @relation(fields: [vehicleKeyId], references: [id_vehicle])
-  vehicleKeyId  Int?         @unique
+  vehicleKeyId  Int
   trips         Trips[]
 }
 
