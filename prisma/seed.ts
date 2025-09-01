@@ -12,6 +12,14 @@ async function main() {
     skipDuplicates: true,
   });
 
+    await prisma.roles.createMany({
+        data: [
+            { id_role: 1, role_name: 'Admin' },
+            { id_role: 2, role_name: 'User' },
+        ],
+        skipDuplicates: true,
+    });
+
   await prisma.transmissions.createMany({
     data: [
       { id_transmission: 1, transmission_type: 'Manuelle' },
