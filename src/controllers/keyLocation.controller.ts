@@ -45,10 +45,9 @@ class KeyLocationController {
 
     async createKeyLocation(req: Request, res: Response): Promise<void> {
         try {
-            const { agency_id, office, comment } = req.body;
+            const { agency_id, comment } = req.body;
             const keyLocation = await this.keyLocationService.createKeyLocation({
                 agency_id,
-                office,
                 comment
             });
             res.status(201).json(keyLocation);
@@ -60,11 +59,10 @@ class KeyLocationController {
     async updateKeyLocation(req: Request, res: Response): Promise<void> {
         try {
             const id = parseInt(req.params.id);
-            const { agency_id, office, comment } = req.body;
+            const { agency_id, comment } = req.body;
             
             const keyLocation = await this.keyLocationService.updateKeyLocation(id, {
                 agency_id,
-                office,
                 comment
             });
             
