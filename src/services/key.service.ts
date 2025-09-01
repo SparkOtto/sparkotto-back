@@ -42,7 +42,6 @@ class KeyService {
                     locations.set(loc.id_key_location, {
                         id_key_location: loc.id_key_location,
                         agency_id: loc.agency_id,
-                        office: loc.office,
                         comment: loc.comment,
                         agency: loc.agency
                     });
@@ -67,7 +66,6 @@ class KeyService {
                     locations.set(loc.id_key_location, {
                         id_key_location: loc.id_key_location,
                         agency_id: loc.agency_id,
-                        office: loc.office,
                         comment: loc.comment,
                         agency: loc.agency
                     });
