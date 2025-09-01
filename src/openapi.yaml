@@ -646,10 +646,6 @@ components:
       agency_id:
         type: integer
         example: 1
-      office:
-        type: string
-        description: Nom du bureau ou emplacement spécifique
-        example: "Bureau principal"
       comment:
         type: string
         nullable: true

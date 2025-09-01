@@ -38,7 +38,6 @@ class KeyLocationService {
 
     async createKeyLocation(data: {
         agency_id: number;
-        office: string;
         comment?: string;
     }) {
         return this.prisma.keyLocations.create({
@@ -51,7 +50,6 @@ class KeyLocationService {
 
     async updateKeyLocation(id_key_location: number, data: {
         agency_id?: number;
-        office?: string;
         comment?: string;
     }) {
         return this.prisma.keyLocations.update({
