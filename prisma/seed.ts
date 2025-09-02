@@ -108,6 +108,21 @@ async function main() {
     skipDuplicates: true,
   });
 
+  // Keys
+    await prisma.keys.createMany({
+        data: [
+            { id_key: 1, key_name: 'Clé Renault Clio', agency_id: 1, vehicleKeyId: 1 },
+            { id_key: 2, key_name: 'Clé Peugeot 308', agency_id: 2, vehicleKeyId: 2 },
+            { id_key: 3, key_name: 'Clé Tesla Model 3', agency_id: 1, vehicleKeyId: 3 },
+            { id_key: 4, key_name: 'Clé Toyota Yaris', agency_id: 2, vehicleKeyId: 4 },
+            { id_key: 5, key_name: 'Clé de secours Renault Clio', agency_id: 1, vehicleKeyId: 1 },
+            { id_key: 6, key_name: 'Clé de secours Peugeot 308', agency_id: 2, vehicleKeyId: 2 },
+            { id_key: 7, key_name: 'Clé de secours Tesla Model 3', agency_id: 1, vehicleKeyId: 3 },
+            { id_key: 8, key_name: 'Clé de secours Toyota Yaris', agency_id: 2, vehicleKeyId: 4 },
+        ],
+        skipDuplicates: true,
+    });
+
   console.log('Seed data inserted successfully');
 }
 
