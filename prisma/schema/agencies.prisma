@@ -1,5 +1,5 @@
 model Agencies {
-  id_agency       Int            @id @default(autoincrement())
+  id_agency       Int        @id @default(autoincrement())
   city            String
   postal_code     Int
   street          String
@@ -7,6 +7,6 @@ model Agencies {
   phone           String
   users           User[]
   vehicles        Vehicles[]
-  key_locations   KeyLocations[]
+  keys            Keys[]
   head_office     Boolean
 }

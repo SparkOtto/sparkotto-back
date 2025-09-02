@@ -86,7 +86,7 @@ class TripService {
         // Mettre à jour la localisation de la clé
         const keyService = new KeyService();
         await keyService.updateKey(trip.id_used_key, {
-            keyLocationId: returnData.key_location_id
+            agency_id: returnData.current_location_agency_id
         });
 
         // Marquer le voyage comme terminé
