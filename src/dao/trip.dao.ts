@@ -26,6 +26,18 @@ class TripDAO {
         });
     }
 
+    async getTrips() {
+        return this.prisma.trips.findMany({
+            include: {
+                vehicle: true,
+                driver: true,
+                carpoolings: true,
+                agency_departure: true,
+                agency_arrival: true,
+            },
+        });
+    }
+
     async getTripsByVehicle(id_vehicle: number) {
         return this.prisma.trips.findMany({
             where: { id_vehicle },
@@ -33,6 +45,8 @@ class TripDAO {
                 vehicle: true,
                 driver: true,
                 carpoolings: true,
+                agency_departure: true,
+                agency_arrival: true,
             },
         });
     }
@@ -45,6 +59,8 @@ class TripDAO {
                 driver: true,
                 key: true,
                 carpoolings: true,
+                agency_departure: true,
+                agency_arrival: true,
             },
         });
     }
@@ -64,6 +80,9 @@ class TripDAO {
                 vehicle: true,
                 driver: true,
                 key: true,
+                carpoolings: true,
+                agency_departure: true,
+                agency_arrival: true,
             },
         });
     }
@@ -80,6 +99,9 @@ class TripDAO {
                 vehicle: true,
                 driver: true,
                 key: true,
+                carpoolings: true,
+                agency_departure: true,
+                agency_arrival: true,
             },
         });
     }

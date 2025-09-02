@@ -9,4 +9,6 @@ model Agencies {
   vehicles        Vehicles[]
   keys            Keys[]
   head_office     Boolean
+  trips_departure  Trips[] @relation("DepartureAgency")
+  trips_arrival    Trips[] @relation("ArrivalAgency")
 }

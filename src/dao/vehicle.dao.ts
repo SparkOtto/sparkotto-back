@@ -15,15 +15,38 @@ export type VehicleFilterParams = {
 export const vehicleDao = {
     async createVehicle(data: Omit<Vehicles, 'id_vehicle'> & { fuelTypeId: number; transmissionId: number; agency_id: number }): Promise<Vehicles> {
         const { fuelTypeId, transmissionId, agency_id, ...vehicleData } = data;
-        return await prisma.vehicles.create({
+        // Créer le véhicule sans les clés initiales
+        const newVehicle = await prisma.vehicles.create({
             data: {
-                ...vehicleData,
-                agency: { connect: { id_agency: agency_id } },
-                fuel_type: { connect: { id_fuel: fuelTypeId } },
-                transmission: { connect: { id_transmission: transmissionId } },
+            ...vehicleData,
+            agency: { connect: { id_agency: agency_id } },
+            fuel_type: { connect: { id_fuel: fuelTypeId } },
+            transmission: { connect: { id_transmission: transmissionId } },
+            trips: { create: [] },
             },
-            include: { fuel_type: true, transmission: true, agency: true, keys: { include: { agency: true }} },
+            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
         });
+
+        await prisma.keys.createManyAndReturn({
+            data: [
+                {
+                    key_name: 'Clé ' + newVehicle.license_plate,
+                    agency_id: agency_id,
+                    vehicleKeyId: newVehicle.id_vehicle
+                },
+                {
+                    key_name: 'Clé de secours ' + newVehicle.license_plate,
+                    agency_id: agency_id,
+                    vehicleKeyId: newVehicle.id_vehicle
+                }
+            ]
+        });
+
+        // Retourner le véhicule avec les clés ajoutées
+        return await prisma.vehicles.findUnique({
+            where: { id_vehicle: newVehicle.id_vehicle },
+            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
+        }) as Vehicles;
     },
 
     async updateVehicle(
@@ -40,8 +63,11 @@ export const vehicleDao = {
                 ...(agency_id !== undefined && { agency: { connect: { id_agency: agency_id } } }),
                 ...(fuelTypeId !== undefined && { fuel_type: { connect: { id_fuel: fuelTypeId } } }),
                 ...(transmissionId !== undefined && { transmission: { connect: { id_transmission: transmissionId } } }),
+                // Removed trips and keys from update data
+                trips: { create: [] }, // Do not modify trips on update
+                keys: { create: [] }, // Do not modify keys on update
             },
-            include: { fuel_type: true, transmission: true, agency: true, keys: { include: { agency: true }} },
+            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
         });
     },
 

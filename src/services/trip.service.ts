@@ -27,6 +27,10 @@ class TripService {
         return this.dao.createTrip(data);
     }
 
+    async getTrips() {
+        return this.dao.getTrips();
+    }
+
     async getTripsByVehicle(id_vehicle: number) {
         return this.dao.getTripsByVehicle(id_vehicle);
     }

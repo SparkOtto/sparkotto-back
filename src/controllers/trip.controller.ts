@@ -12,8 +12,17 @@ class TripController {
         try {
             const trip = await this.service.createTrip(req.body);
             res.status(201).json(trip);
+        } catch (error : any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async getTrips(req: Request, res: Response): Promise<void> {
+        try {
+            const trips = await this.service.getTrips();
+            res.status(200).json(trips);
         } catch (error) {
-            res.status(400).json({ error: 'Erreur lors de la création du voyage.' });
+            res.status(500).json({ error: 'Erreur lors de la récupération des voyages.' });
         }
     }
 
