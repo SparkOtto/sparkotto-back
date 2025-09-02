@@ -17,6 +17,16 @@ class TripController {
         }
     }
 
+    async updateTrip(req: Request, res: Response): Promise<void> {
+        try {
+            const tripId = parseInt(req.params.tripId);
+            const updatedTrip = await this.service.updateTrip(tripId, req.body);
+            res.status(200).json(updatedTrip);
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
     async getTrips(req: Request, res: Response): Promise<void> {
         try {
             const trips = await this.service.getTrips();

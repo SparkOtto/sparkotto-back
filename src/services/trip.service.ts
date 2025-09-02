@@ -27,6 +27,22 @@ class TripService {
         return this.dao.createTrip(data);
     }
 
+    async updateTrip(tripId: number, data: Partial<{
+        id_used_key: number;
+        id_vehicle: number;
+        id_driver: number;
+        start_date: Date;
+        end_date: Date;
+        departure_agency: number;
+        arrival_agency: number;
+        reservation_status: string;
+        carpooling: boolean;
+        meeting_time?: Date;
+        meeting_comment?: string;
+    }>) {
+        return this.dao.updateTrip(tripId, data);
+    }
+
     async getTrips() {
         return this.dao.getTrips();
     }
