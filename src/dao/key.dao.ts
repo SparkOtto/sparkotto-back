@@ -3,18 +3,14 @@ import { PrismaClient } from '@prisma/client';
 class KeyDAO {
     private prisma = new PrismaClient();
 
-    async create(data: { key_name: string; keyLocationId: number; vehicleKeyId: number }) {
+    async create(data: { key_name: string; agencyId: number; vehicleKeyId: number }) {
         return this.prisma.keys.create({ data });
     }
 
     async findAll() {
         return this.prisma.keys.findMany({
             include: {
-                key_location: {
-                    include: {
-                        agency: true
-                    }
-                },
+                agency: true,
                 vehicle_key: true,
                 trips: true,
             },
@@ -25,11 +21,7 @@ class KeyDAO {
         return this.prisma.keys.findUnique({
             where: { id_key },
             include: {
-                key_location: {
-                    include: {
-                        agency: true
-                    }
-                },
+                agency: true,
                 vehicle_key: true,
                 trips: true,
             },
@@ -40,14 +32,14 @@ class KeyDAO {
         return this.prisma.keys.findMany({
             where: { vehicleKeyId: id_vehicle },
             include: {
-                key_location: true,
+                agency: true,
                 vehicle_key: true,
                 trips: true,
             },
         });
     }
 
-    async update(id_key: number, data: { key_name?: string; keyLocationId?: number; vehicleKeyId?: number }) {
+    async update(id_key: number, data: { key_name?: string; agencyId?: number; vehicleKeyId?: number }) {
         return this.prisma.keys.update({
             where: { id_key },
             data,

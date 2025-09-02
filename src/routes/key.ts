@@ -5,11 +5,6 @@ import { authenticateToken } from '../middlewares/auth';
 const router = express.Router();
 const controller = new KeyController();
 
-
-// Routes pour les emplacements de clés (via le service Key existant)
-router.get('/locations/all', authenticateToken, controller.getAllKeyLocations.bind(controller));
-router.get('/locations/agency/:agency_id', authenticateToken, controller.getKeyLocationsByAgency.bind(controller));
-
 router.post('/', authenticateToken, controller.createKey.bind(controller));
 router.get('/', authenticateToken, controller.getAllKeys.bind(controller));
 router.get('/vehicle/:id_vehicle', authenticateToken, controller.getKeyByVehicleId.bind(controller));
