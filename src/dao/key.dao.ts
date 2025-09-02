@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 class KeyDAO {
     private prisma = new PrismaClient();
 
-    async create(data: { key_name: string; keyLocationId: number; vehicleKeyId?: number }) {
+    async create(data: { key_name: string; keyLocationId: number; vehicleKeyId: number }) {
         return this.prisma.keys.create({ data });
     }
 

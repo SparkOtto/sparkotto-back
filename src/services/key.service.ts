@@ -3,7 +3,7 @@ import KeyDAO from '../dao/key.dao';
 class KeyService {
     private keyDAO = new KeyDAO();
 
-    async createKey(data: { key_name: string; keyLocationId: number; vehicleKeyId?: number }) {
+    async createKey(data: { key_name: string; keyLocationId: number; vehicleKeyId: number }) {
         return this.keyDAO.create(data);
     }
 
