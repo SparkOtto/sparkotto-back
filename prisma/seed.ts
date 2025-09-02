@@ -14,8 +14,8 @@ async function main() {
 
     await prisma.roles.createMany({
         data: [
-            { id_role: 1, role_name: 'Admin' },
-            { id_role: 2, role_name: 'User' },
+            { id_role: 1, role_name: 'admin' },
+            { id_role: 2, role_name: 'user' },
         ],
         skipDuplicates: true,
     });
