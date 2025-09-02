@@ -73,25 +73,6 @@ class KeyController {
             res.status(400).json({ error: 'Erreur lors de la suppression de la clé.' });
         }
     }
-  
-    async getKeyLocationsByAgency(req: Request, res: Response): Promise<void> {
-        try {
-            const { agency_id } = req.params;
-            const keyLocations = await this.service.getKeyLocationsByAgency(Number(agency_id));
-            res.status(200).json(keyLocations);
-        } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la récupération des emplacements de clés.' });
-        }
-    }
-
-    async getAllKeyLocations(req: Request, res: Response): Promise<void> {
-        try {
-            const keyLocations = await this.service.getAllKeyLocations();
-            res.status(200).json(keyLocations);
-        } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la récupération des emplacements de clés.' });
-        }
-    }
 }
 
 export default KeyController;

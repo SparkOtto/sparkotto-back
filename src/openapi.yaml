@@ -302,54 +302,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  # === EMPLACEMENTS DE CLÉS ===
-  /api/key/locations/all:
-    get:
-      summary: Récupérer tous les emplacements de clés
-      description: Récupère la liste de tous les emplacements de clés disponibles dans toutes les agences
-      responses:
-        '200':
-          description: Liste des emplacements de clés
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/KeyLocation'
-        '500':
-          description: Erreur serveur
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/key/locations/agency/{agency_id}:
-    get:
-      summary: Récupérer les emplacements de clés par agence
-      description: Récupère la liste des emplacements de clés disponibles pour une agence spécifique
-      parameters:
-        - name: agency_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ID de l'agence
-      responses:
-        '200':
-          description: Liste des emplacements de clés pour l'agence
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/KeyLocation'
-        '500':
-          description: Erreur serveur
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
   # === VOYAGE ACTIF ===
   /api/vehicles/active-trip/{vehicleId}:
     get:
@@ -635,24 +587,6 @@ components:
           key:
             $ref: '#/components/schemas/KeyWithLocation'
 
-  # === SCHÉMAS POUR LES CLÉS ET EMPLACEMENTS ===
-  KeyLocation:
-    type: object
-    description: Emplacement de rangement des clés
-    properties:
-      id_key_location:
-        type: integer
-        example: 1
-      agency_id:
-        type: integer
-        example: 1
-      comment:
-        type: string
-        nullable: true
-        description: Commentaire ou instructions spécifiques
-        example: "Au bureau d'accueil, armoire de gauche"
-      agency:
-        $ref: '#/components/schemas/Agency'
 
   KeyWithLocation:
     type: object
@@ -663,15 +597,15 @@ components:
       key_name:
         type: string
         example: "Clé véhicule Toyota Yaris"
-      keyLocationId:
+      agencyId:
         type: integer
         example: 3
       vehicleKeyId:
         type: integer
         nullable: true
         example: 1
-      key_location:
-        $ref: '#/components/schemas/KeyLocation'
+      agency:
+        $ref: '#/components/schemas/Agency'
 
   # === SCHÉMAS POUR L'ÉTAT DES LIEUX ===
   VehicleStateInput:
