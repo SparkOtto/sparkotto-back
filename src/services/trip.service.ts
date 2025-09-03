@@ -24,6 +24,21 @@ class TripService {
         meeting_time?: Date;
         meeting_comment?: string;
     }) {
+        if(data.start_date >= data.end_date) {
+            throw new Error('La date de début doit être antérieure à la date de fin.');
+        }
+
+        // Vérifier si le véhicule est déjà réservé pour la période donnée
+        const existingTrips = await this.dao.getTripsByVehicle(data.id_vehicle);
+        for (const trip of existingTrips) {
+            if (isActiveTrip(trip.reservation_status)) {
+                // Vérifier le chevauchement des dates
+                if ((data.start_date < trip.end_date) && (data.end_date > trip.start_date)) {
+                    throw new Error('Le véhicule est déjà réservé pour la période donnée.');
+                }
+            }
+        }
+
         return this.dao.createTrip(data);
     }
 

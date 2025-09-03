@@ -4,6 +4,10 @@ class KeyService {
     private keyDAO = new KeyDAO();
 
     async createKey(data: { key_name: string; agency_id: number; vehicleKeyId: number }) {
+        if(!data.key_name || !data.agency_id || !data.vehicleKeyId) {
+            throw new Error('Les informations de la clé sont incomplètes');
+        }
+
         return this.keyDAO.create(data);
     }
 
@@ -20,6 +24,10 @@ class KeyService {
     }
 
     async updateKey(id_key: number, data: { key_name?: string; agency_id?: number; vehicleKeyId?: number }) {
+        if(!data.key_name || !data.agency_id || !data.vehicleKeyId) {
+            throw new Error('Les informations de la clé sont incomplètes');
+        }
+
         return this.keyDAO.update(id_key, data);
     }
 

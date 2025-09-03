@@ -8,6 +8,9 @@ export const agencyService = {
     if (isAgencyExists.length > 0) {
       throw new Error(`Agency in city ${input.city} already exists`);
     }
+    if(!input.city || !input.street || !input.postal_code) {
+        throw new Error('les champs obligatoires pour l\'agence ne sont pas tous remplis');
+    }
     const newAgency = await agencyDao.createAgency(input);
     if (!newAgency) {
       throw new Error('Failed to create agency');
@@ -20,7 +23,9 @@ export const agencyService = {
     if (!agency) {
       throw new Error(`Agency with id ${id} not found`);
     }
-
+      if(!update.city || !update.street || !update.postal_code) {
+          throw new Error('les champs obligatoires pour l\'agence ne sont pas tous remplis');
+      }
     const updatedAgency = await agencyDao.updateAgency(id, update);
     if (!updatedAgency) {
       throw new Error(`Failed to update agency with id ${id}`);

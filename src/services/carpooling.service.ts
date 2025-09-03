@@ -8,6 +8,9 @@ class CarpoolingService {
     }
 
     async createCarpooling(data: { id_trip: number; id_passenger: number }) {
+        if(!data.id_trip || !data.id_passenger) {
+            throw new Error('La liaison entre le trajet et le passager est incomplète');
+        }
         return this.dao.createCarpooling(data);
     }
 

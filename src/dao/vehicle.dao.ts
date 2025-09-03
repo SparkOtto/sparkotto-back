@@ -105,7 +105,10 @@ export const vehicleDao = {
     },
 
     async getVehicleById(id_vehicle: number): Promise<Vehicles | null> {
-        return await prisma.vehicles.findUnique({where: {id_vehicle}, include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} }});
+        return await prisma.vehicles.findUnique(
+            {
+                where: {id_vehicle},
+                include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} }});
     },
 
     createVehicleStateRecord: async function (param: {

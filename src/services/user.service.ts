@@ -14,6 +14,9 @@ class UserService {
     if (existingUser) {
       throw new Error('Un utilisateur avec cet email existe déjà');
     }
+    if (!userData.first_name || !userData.last_name || !userData.email || !userData.password) {
+      throw new Error('Les informations personnelles sont incomplètes');
+    }
     return this.userDAO.createUser(userData);
   }
 
@@ -45,7 +48,10 @@ class UserService {
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
     const existingUser = await this.userDAO.getUserById(id);
     if (!existingUser) {
-      throw new Error('Utilisateur non trouvé');
+        throw new Error('Utilisateur non trouvé');
+    }
+    if (!userData.first_name || !userData.last_name || !userData.email || !userData.password) {
+        throw new Error('Les informations personnelles sont incomplètes');
     }
     return this.userDAO.updateUser(id, userData);
   }
