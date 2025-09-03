@@ -27,6 +27,16 @@ class TripController {
         }
     }
 
+    async getMyTrips(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = parseInt(req.params.id);
+            const trips = await this.service.getTripsByUser(userId);
+            res.status(200).json(trips);
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
     async getTrips(req: Request, res: Response): Promise<void> {
         try {
             const trips = await this.service.getTrips();
@@ -68,27 +78,6 @@ class TripController {
             });
 
             res.status(200).json(result);
-        } catch (error: any) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-
-    /**
-     * POST /api/trips/:tripId/departure-state
-     * Créer un état des lieux de départ
-     */
-    async createDepartureVehicleState(req: Request, res: Response): Promise<void> {
-        try {
-            const tripId = parseInt(req.params.tripId);
-            const { internal_cleanliness, external_cleanliness, comment } = req.body;
-
-            const vehicleState = await this.service.createDepartureVehicleState(tripId, {
-                internal_cleanliness,
-                external_cleanliness,
-                comment
-            });
-
-            res.status(201).json(vehicleState);
         } catch (error: any) {
             res.status(400).json({ error: error.message });
         }

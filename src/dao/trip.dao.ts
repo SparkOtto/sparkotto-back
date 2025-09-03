@@ -105,6 +105,20 @@ class TripDAO {
             },
         });
     }
+
+    async getTripsByUser(userId: number) {
+        return this.prisma.trips.findMany({
+            where: { id_driver: userId },
+            include: {
+                vehicle: true,
+                driver: true,
+                key: true,
+                carpoolings: true,
+                agency_departure: true,
+                agency_arrival: true,
+            },
+        });
+    }
 }
 
 export default TripDAO;

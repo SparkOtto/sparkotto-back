@@ -10,8 +10,6 @@ router.get('/', authenticateToken, (req, res) => tripController.getTrips(req, re
 router.get('/vehicle/:id_vehicle', authenticateToken, (req,res) => tripController.getTripsByVehicle(req, res));
 router.put('/return/:tripId', authenticateToken, (req, res) => tripController.returnVehicle(req, res));
 router.put('/:tripId', authenticateToken, (req, res) => tripController.updateTrip(req, res));
-
-// Route pour créer un état des lieux de départ
-router.post('/:tripId/departure-state', authenticateToken, (req, res) => tripController.createDepartureVehicleState(req, res));
+router.get('/my/:id', authenticateToken, (req, res) => tripController.getMyTrips(req, res));
 
 export default router;

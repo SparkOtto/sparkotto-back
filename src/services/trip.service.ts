@@ -43,6 +43,10 @@ class TripService {
         return this.dao.updateTrip(tripId, data);
     }
 
+    async getTripsByUser(userId: number) {
+        return this.dao.getTripsByUser(userId);
+    }
+
     async getTrips() {
         return this.dao.getTrips();
     }
@@ -121,27 +125,6 @@ class TripService {
             vehicleState: vehicleState,
             message: 'Véhicule restitué avec succès'
         };
-    }
-
-    // Nouvelle méthode pour créer un état des lieux de départ
-    async createDepartureVehicleState(tripId: number, stateData: {
-        internal_cleanliness: number;
-        external_cleanliness: number;
-        comment?: string;
-    }) {
-        const trip = await this.dao.getTripById(tripId);
-        if (!trip) {
-            throw new Error('Voyage non trouvé');
-        }
-
-        const vehicleStateService = new VehicleStateService();
-        return vehicleStateService.createVehicleState({
-            id_vehicle: trip.id_vehicle,
-            state_type: VEHICLE_STATE_TYPE.DEPARTURE,
-            internal_cleanliness: stateData.internal_cleanliness,
-            external_cleanliness: stateData.external_cleanliness,
-            comment: stateData.comment
-        });
     }
 
     async getActiveTripByVehicle(id_vehicle: number) {
