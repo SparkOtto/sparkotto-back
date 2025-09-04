@@ -17,12 +17,42 @@ describe('vehicleService', () => {
     describe('createVehicle', () => {
         it('should create a vehicle if license plate is unique', async () => {
             mockedDao.getVehicles.mockResolvedValue([]);
-            mockedDao.createVehicle.mockResolvedValue({id_vehicle: 1, license_plate: 'AA-123-BB'} as Vehicles);
+            mockedDao.createVehicle.mockResolvedValue({id_vehicle: 1, license_plate: 'AA-123-BB',
+                brand: 'Toyota',
+                model: 'Yaris',
+                fuelTypeId: 1,
+                mileage: 50000,
+                seat_count: 5,
+                agency_id: 1,
+                available: true,
+                fuel_capacity: 45,
+                transmissionId: 1
+            } as Vehicles);
 
-            const result = await vehicleService.createVehicle({} as any);
+            const result = await vehicleService.createVehicle({
+                brand: 'Toyota',
+                model: 'Yaris',
+                license_plate: 'AA-123-BB',
+                mileage: 50000,
+                fuelTypeId: 1,
+                transmissionId: 1,
+                agency_id: 1,
+                seat_count: 5,
+                available: true,
+                fuel_capacity: 45
+            } as any);
 
             expect(mockedDao.createVehicle).toHaveBeenCalled();
-            expect(result).toEqual({id_vehicle: 1, license_plate: 'AA-123-BB'});
+            expect(result).toEqual({id_vehicle: 1, license_plate: 'AA-123-BB',
+                brand: 'Toyota',
+                model: 'Yaris',
+                fuelTypeId: 1,
+                mileage: 50000,
+                seat_count: 5,
+                agency_id: 1,
+                available: true,
+                fuel_capacity: 45,
+                transmissionId: 1});
         });
 
         it('should throw error if license plate exists', async () => {
@@ -34,8 +64,6 @@ describe('vehicleService', () => {
 
     describe('updateVehicle', () => {
         it('should update a vehicle if it exists', async () => {
-            mockedDao.getVehicleById.mockResolvedValue({id_vehicle: 1} as Vehicles);
-            mockedDao.updateVehicle.mockResolvedValue({id_vehicle: 1, mileage: 60000} as Vehicles);
             const vehicleUpdate = {
                 id_vehicle: 1,
                 brand: 'Peugeot',
@@ -49,9 +77,12 @@ describe('vehicleService', () => {
                 fuel_capacity: 50,
                 transmissionId: 1
             };
+            mockedDao.getVehicleById.mockResolvedValue(vehicleUpdate as Vehicles);
+            mockedDao.updateVehicle.mockResolvedValue(vehicleUpdate as Vehicles);
+
             const result = await vehicleService.updateVehicle(1, vehicleUpdate);
 
-            expect(result).toEqual({vehicleUpdate});
+            expect(result).toEqual(vehicleUpdate);
         });
 
         it('should throw error if vehicle does not exist', async () => {

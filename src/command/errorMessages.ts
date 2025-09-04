@@ -8,7 +8,7 @@ export class ErrorMessages {
 
     static User = {
         NOT_FOUND: (id: number) => `L'utilisateur avec l'id ${id} est introuvable`,
-        EMAIL_EXISTS: "L'email existe déjà",
+        EMAIL_EXISTS: "Un utilisateur avec cet email existe déjà",
         MISSING_REQUIRED_FIELDS: "Les informations personnelles sont incomplètes",
         OLD_PASSWORD_INCORRECT: "Ancien mot de passe incorrect",
         INVALID_CREDENTIALS: "Email ou mot de passe invalide",
