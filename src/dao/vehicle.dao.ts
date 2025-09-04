@@ -100,7 +100,23 @@ export const vehicleDao = {
                     }
                     : {}),
             },
-            include: {fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
+            include: {
+                fuel_type: true, 
+                transmission: true, 
+                agency: true, 
+                trips: {
+                    include: {
+                        carpoolings: {
+                            include: {
+                                passenger: true,
+                            }
+                        }
+                    }
+                },
+                keys: { 
+                    include: { agency: true }
+                } 
+            },
         });
     },
 
@@ -108,7 +124,24 @@ export const vehicleDao = {
         return await prisma.vehicles.findUnique(
             {
                 where: {id_vehicle},
-                include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} }});
+                include: {
+                    fuel_type: true, 
+                    transmission: true, 
+                    agency: true, 
+                    trips: {
+                        include: {
+                            carpoolings: {
+                                include: {
+                                    passenger: true,
+                                }
+                            }
+                        }
+                    },
+                    keys: { 
+                        include: { agency: true }
+                    } 
+                },
+            });
     },
 
     createVehicleStateRecord: async function (param: {
