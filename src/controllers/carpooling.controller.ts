@@ -13,7 +13,8 @@ class CarpoolingController {
             const carpooling = await this.service.createCarpooling(req.body);
             res.status(201).json(carpooling);
         } catch (error) {
-            res.status(400).json({ error: 'Erreur lors de la création du covoiturage' });
+            const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la création du covoiturage';
+            res.status(400).json({ error: errorMessage });
         }
     }
 
