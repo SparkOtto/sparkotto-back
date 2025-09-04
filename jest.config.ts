@@ -7,7 +7,8 @@ const config: JestConfigWithTsJest = {
   },
   testPathIgnorePatterns: [
     "/node_modules/",
-    "src/test.js" // Ignore ce fichier (test bdd)
+    "src/test.js", // Ignore ce fichier (test bdd)
+      "/dist/"
   ],
   collectCoverage: true,
   collectCoverageFrom: [

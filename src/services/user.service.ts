@@ -1,6 +1,7 @@
 import {User} from '@prisma/client';
 import UserDAO from '../dao/user.dao';
 import bcrypt from "bcryptjs";
+import {ErrorMessages} from "../command/errorMessages";
 
 class UserService {
   private userDAO: UserDAO;
@@ -12,10 +13,10 @@ class UserService {
   async createUser(userData: User): Promise<User> {
     const existingUser = await this.userDAO.getUserByEmail(userData.email);
     if (existingUser) {
-      throw new Error('Un utilisateur avec cet email existe déjà');
+      throw new Error(ErrorMessages.User.EMAIL_EXISTS);
     }
     if (!userData.first_name || !userData.last_name || !userData.email || !userData.password) {
-      throw new Error('Les informations personnelles sont incomplètes');
+      throw new Error(ErrorMessages.User.MISSING_REQUIRED_FIELDS);
     }
     return this.userDAO.createUser(userData);
   }
@@ -36,7 +37,7 @@ class UserService {
   async getUserByEmail(email: string): Promise<User | null> {
     const existingUser = await this.userDAO.getUserByEmail(email);
     if(!existingUser) {
-      throw new Error('Utilisateur non trouvé');
+      throw new Error(ErrorMessages.User.USER_NOT_FOUND);
     }
     return existingUser;
   }
@@ -48,10 +49,10 @@ class UserService {
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
     const existingUser = await this.userDAO.getUserById(id);
     if (!existingUser) {
-        throw new Error('Utilisateur non trouvé');
+        throw new Error(ErrorMessages.User.USER_NOT_FOUND);
     }
     if (!userData.first_name || !userData.last_name || !userData.email || !userData.password) {
-        throw new Error('Les informations personnelles sont incomplètes');
+        throw new Error(ErrorMessages.User.MISSING_REQUIRED_FIELDS);
     }
     return this.userDAO.updateUser(id, userData);
   }
@@ -59,7 +60,7 @@ class UserService {
   async deleteUser(id: number): Promise<User> {
     const existingUser = await this.userDAO.getUserById(id);
     if (!existingUser) {
-      throw new Error('Utilisateur non trouvé');
+      throw new Error(ErrorMessages.User.USER_NOT_FOUND);
     }
     return this.userDAO.deleteUser(id);
   }
@@ -70,10 +71,10 @@ class UserService {
   async changePassword(id: number, oldPassword: any, newPassword: any) {
     const user = await this.userDAO.getUserById(id);
     if (!user) {
-      throw new Error('Utilisateur non trouvé');
+      throw new Error(ErrorMessages.User.USER_NOT_FOUND);
     }
     if (!bcrypt.compareSync(oldPassword, user.password)) {
-      throw new Error('Ancien mot de passe incorrect');
+      throw new Error(ErrorMessages.User.OLD_PASSWORD_INCORRECT);
     }
     return this.userDAO.updateUser(id, { password: newPassword });
   }

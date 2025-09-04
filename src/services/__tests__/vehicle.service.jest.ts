@@ -2,6 +2,7 @@ import {vehicleService} from '../vehicle.service';
 import {vehicleDao} from '../../dao/vehicle.dao';
 import {Vehicles} from '@prisma/client';
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
+import {ErrorMessages} from "../../command/errorMessages";
 
 
 jest.mock('../../dao/vehicle.dao');
@@ -27,7 +28,7 @@ describe('vehicleService', () => {
         it('should throw error if license plate exists', async () => {
             mockedDao.getVehicles.mockResolvedValue([{license_plate: 'AA-123-BB'} as Vehicles]);
 
-            await expect(vehicleService.createVehicle({license_plate: 'AA-123-BB'} as any)).rejects.toThrow('A vehicle with this license plate already exists');
+            await expect(vehicleService.createVehicle({license_plate: 'AA-123-BB'} as any)).rejects.toThrow(ErrorMessages.Vehicle.LICENSE_PLATE_EXISTS);
         });
     });
 
@@ -35,16 +36,41 @@ describe('vehicleService', () => {
         it('should update a vehicle if it exists', async () => {
             mockedDao.getVehicleById.mockResolvedValue({id_vehicle: 1} as Vehicles);
             mockedDao.updateVehicle.mockResolvedValue({id_vehicle: 1, mileage: 60000} as Vehicles);
+            const vehicleUpdate = {
+                id_vehicle: 1,
+                brand: 'Peugeot',
+                model: '208',
+                fuelTypeId: 1,
+                license_plate: 'AA-123-BB',
+                mileage: 60000,
+                seat_count: 5,
+                agency_id: 1,
+                available: true,
+                fuel_capacity: 50,
+                transmissionId: 1
+            };
+            const result = await vehicleService.updateVehicle(1, vehicleUpdate);
 
-            const result = await vehicleService.updateVehicle(1, {mileage: 60000});
-
-            expect(result).toEqual({id_vehicle: 1, mileage: 60000});
+            expect(result).toEqual({vehicleUpdate});
         });
 
         it('should throw error if vehicle does not exist', async () => {
             mockedDao.getVehicleById.mockResolvedValue(null);
+            const emptyVehicle = {
+                id_vehicle: 1,
+                brand: '',
+                model: '',
+                fuelTypeId: 1,
+                license_plate: '',
+                mileage: 0,
+                seat_count: 0,
+                agency_id: 1,
+                available: false,
+                fuel_capacity: null,
+                transmissionId: 1
+            };
 
-            await expect(vehicleService.updateVehicle(1, {})).rejects.toThrow('Vehicle with id 1 not found');
+            await expect(vehicleService.updateVehicle(1, emptyVehicle)).rejects.toThrow(ErrorMessages.Vehicle.NOT_FOUND(1));
         });
     });
 
@@ -81,7 +107,7 @@ describe('vehicleService', () => {
         it('should throw error if vehicle does not exist', async () => {
             mockedDao.getVehicleById.mockResolvedValue(null);
 
-            await expect(vehicleService.deleteVehicle(99)).rejects.toThrow('Vehicle with id 99 not found');
+            await expect(vehicleService.deleteVehicle(99)).rejects.toThrow(ErrorMessages.Vehicle.NOT_FOUND(99));
         });
     });
 });

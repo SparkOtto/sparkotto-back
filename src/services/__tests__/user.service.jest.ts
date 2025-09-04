@@ -23,7 +23,7 @@ describe('UserService', () => {
                 first_name: 'Test User',
                 password: 'password123',
                 id_user: 1,
-                last_name: '',
+                last_name: 'Test User',
                 phone_number: null,
                 roleId: 0,
                 agency_id: null,
