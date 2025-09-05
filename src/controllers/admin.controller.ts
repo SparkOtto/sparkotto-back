@@ -70,16 +70,39 @@ class AdminController {
 
             if (typeof id !== "number" || typeof isLocked !== "boolean") {
                 return res.status(400).json({ message: "Données invalides" });
-            } else {
-                await this.adminService.lockUnlockUser(id, isLocked);
-                return res.status(200).json({
-                    message: isLocked
-                        ? 'Le compte utilisateur a été débloqué'
-                        : 'Le compte utilisateur a été bloqué',
-                })
             }
+
+            const user = await this.adminService.lockUnlockUser(id, isLocked);
+            
+            // Envoyer des emails de notification
+            try {
+                if (isLocked) {
+                    // Compte bloqué - pas d'email spécifique car c'est une action admin
+                } else {
+                    // Compte débloqué - envoyer email de confirmation
+                    await this.emailService.sendAccountUnlockedEmail(user.email, user.first_name);
+                }
+            } catch (emailError) {
+                console.error('Erreur lors de l\'envoi de l\'email:', emailError);
+                // On continue même si l'email échoue
+            }
+
+            return res.status(200).json({
+                message: isLocked
+                    ? 'Le compte utilisateur a été bloqué'
+                    : 'Le compte utilisateur a été débloqué',
+                user: {
+                    id: user.id_user,
+                    email: user.email,
+                    account_locked: user.account_locked
+                }
+            });
+            
         } catch (error) {
-            return res.status(500).json({ message: 'Une erreur s\'est produite, si le problème perciste, veuillez contacter votre administrateur' });
+            console.error('Erreur dans lockUnlockUser:', error);
+            return res.status(500).json({ 
+                message: 'Une erreur s\'est produite, si le problème persiste, veuillez contacter votre administrateur' 
+            });
         }
     }
 }
