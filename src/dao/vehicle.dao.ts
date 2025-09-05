@@ -1,9 +1,6 @@
 import {PrismaClient, Vehicles} from '@prisma/client';
 import {Prisma} from '@prisma/client';
 
-
-const prisma = new PrismaClient();
-
 export type VehicleFilterParams = {
     available?: boolean;
     agency_id?: number;
@@ -12,11 +9,16 @@ export type VehicleFilterParams = {
     model?: string;
 };
 
-export const vehicleDao = {
+class VehicleDAO {
+    private prisma: PrismaClient;
+
+    constructor() {
+        this.prisma = new PrismaClient();
+    }
     async createVehicle(data: Omit<Vehicles, 'id_vehicle'> & { fuelTypeId: number; transmissionId: number; agency_id: number }): Promise<Vehicles> {
         const { fuelTypeId, transmissionId, agency_id, ...vehicleData } = data;
         // Créer le véhicule sans les clés initiales
-        const newVehicle = await prisma.vehicles.create({
+        const newVehicle = await this.prisma.vehicles.create({
             data: {
             ...vehicleData,
             agency: { connect: { id_agency: agency_id } },
@@ -27,7 +29,7 @@ export const vehicleDao = {
             include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
         });
 
-        await prisma.keys.createManyAndReturn({
+        await this.prisma.keys.createManyAndReturn({
             data: [
                 {
                     key_name: 'Clé ' + newVehicle.license_plate,
@@ -43,11 +45,11 @@ export const vehicleDao = {
         });
 
         // Retourner le véhicule avec les clés ajoutées
-        return await prisma.vehicles.findUnique({
+        return await this.prisma.vehicles.findUnique({
             where: { id_vehicle: newVehicle.id_vehicle },
             include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
         }) as Vehicles;
-    },
+    }
 
     async updateVehicle(
         id_vehicle: number,
@@ -56,7 +58,7 @@ export const vehicleDao = {
         // Destructure and remove custom fields from data
         const { fuelTypeId, transmissionId, agency_id, ...vehicleData } = data;
 
-        return await prisma.vehicles.update({
+        return await this.prisma.vehicles.update({
             where: { id_vehicle },
             data: {
                 ...vehicleData,
@@ -69,13 +71,13 @@ export const vehicleDao = {
             },
             include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
         });
-    },
+    }
 
     async deleteVehicle(id_vehicle: number): Promise<Vehicles> {
-        return await prisma.vehicles.delete({
+        return await this.prisma.vehicles.delete({
             where: {id_vehicle},
         });
-    },
+    }
 
     async getVehicles(filters: VehicleFilterParams = {}): Promise<Vehicles[]> {
         const {
@@ -86,7 +88,7 @@ export const vehicleDao = {
             model,
         } = filters;
 
-        return await prisma.vehicles.findMany({
+        return await this.prisma.vehicles.findMany({
             where: {
                 ...(available !== undefined && {available}),
                 ...(agency_id !== undefined && {agency_id}),
@@ -118,10 +120,10 @@ export const vehicleDao = {
                 } 
             },
         });
-    },
+    }
 
     async getVehicleById(id_vehicle: number): Promise<Vehicles | null> {
-        return await prisma.vehicles.findUnique(
+        return await this.prisma.vehicles.findUnique(
             {
                 where: {id_vehicle},
                 include: {
@@ -142,9 +144,9 @@ export const vehicleDao = {
                     } 
                 },
             });
-    },
+    }
 
-    createVehicleStateRecord: async function (param: {
+    async createVehicleStateRecord(param: {
         id_vehicle: number;
         state_date: Date;
         state_type: string;
@@ -152,7 +154,7 @@ export const vehicleDao = {
         external_cleanliness: number;
         comment: string | undefined;
     }) {
-        return prisma.vehicleStateRecords.create({
+        return this.prisma.vehicleStateRecords.create({
             data: {
                 state_date: param.state_date,
                 state_type: param.state_type,
@@ -164,5 +166,7 @@ export const vehicleDao = {
                 },
             },
         });
-    },
-};
+    }
+}
+
+export default VehicleDAO;
