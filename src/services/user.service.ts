@@ -101,14 +101,6 @@ class UserService {
     await this.userDAO.resetFailedAttempts(id);
   }
 
-  async lockUserAccount(id: number): Promise<User> {
-    return this.userDAO.lockAccount(id);
-  }
-
-  async unlockUserAccount(id: number): Promise<User> {
-    return this.userDAO.unlockAccount(id);
-  }
-
   async isUserAccountLocked(user: User): Promise<boolean> {
     return user.account_locked;
   }
