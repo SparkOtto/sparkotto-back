@@ -1,14 +1,16 @@
 import TripDAO from '../dao/trip.dao';
-import { vehicleService } from './vehicle.service';
+import VehicleService from './vehicle.service';
 import KeyService from './key.service';
 import { TRIP_STATUS, canReturnVehicle, isActiveTrip } from '../models/tripStatus';
 import VehicleStateService, { VEHICLE_STATE_TYPE } from './vehicleState.service';
 
 class TripService {
     private dao: TripDAO;
+    private vehicleService: VehicleService;
 
     constructor() {
         this.dao = new TripDAO();
+        this.vehicleService = new VehicleService();
     }
 
     async createTrip(data: {
@@ -111,12 +113,12 @@ class TripService {
         }
 
         // Mettre à jour le kilométrage du véhicule
-        const currentVehicle = await vehicleService.getVehicleById(trip.id_vehicle);
+        const currentVehicle = await this.vehicleService.getVehicleById(trip.id_vehicle);
         if (!currentVehicle) {
             throw new Error('Véhicule non trouvé');
         }
         
-        await vehicleService.updateVehicle(trip.id_vehicle, {
+        await this.vehicleService.updateVehicle(trip.id_vehicle, {
             ...currentVehicle,
             mileage: returnData.mileage,
             available: true
