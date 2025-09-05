@@ -31,7 +31,11 @@ class TripDAO {
             include: {
                 vehicle: true,
                 driver: true,
-                carpoolings: true,
+                carpoolings: {
+                    include: {
+                        passenger: true,
+                    },
+                },
                 agency_departure: true,
                 agency_arrival: true,
             },
@@ -44,7 +48,11 @@ class TripDAO {
             include: {
                 vehicle: true,
                 driver: true,
-                carpoolings: true,
+                carpoolings: {
+                    include: {
+                        passenger: true,
+                    },
+                },
                 agency_departure: true,
                 agency_arrival: true,
             },
@@ -58,7 +66,11 @@ class TripDAO {
                 vehicle: true,
                 driver: true,
                 key: true,
-                carpoolings: true,
+                carpoolings: {
+                    include: {
+                        passenger: true,
+                    },
+                },
                 agency_departure: true,
                 agency_arrival: true,
             },
@@ -80,7 +92,11 @@ class TripDAO {
                 vehicle: true,
                 driver: true,
                 key: true,
-                carpoolings: true,
+                carpoolings: {
+                    include: {
+                        passenger: true,
+                    },
+                },
                 agency_departure: true,
                 agency_arrival: true,
             },
