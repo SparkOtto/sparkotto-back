@@ -141,7 +141,7 @@ class TripService {
         return {
             trip: updatedTrip,
             vehicleState: vehicleState,
-            message: Messages.Trip.V
+            message: Messages.Trip.VEHICLE_SUCCESS_RESTORE
         };
     }
 
