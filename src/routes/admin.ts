@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import AdminController from "../controllers/admin.controller";
-import { authenticateToken, CustomRequest } from '../middlewares/auth';
-import { authorizeRoles } from '../middlewares/role';
+import { authenticateToken, authorizeRoles } from '../middlewares/auth';
 
 const router = express.Router();
 const adminController = new AdminController();
