@@ -74,6 +74,7 @@ class VehicleDAO {
     }
 
     async deleteVehicle(id_vehicle: number): Promise<Vehicles> {
+
         return await this.prisma.vehicles.delete({
             where: {id_vehicle},
         });

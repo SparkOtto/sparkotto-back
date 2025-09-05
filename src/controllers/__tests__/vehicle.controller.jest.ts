@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import VehicleController from '../vehicle.controller';
-import { vehicleService } from '../../services/vehicle.service';
+import VehicleService from '../../services/vehicle.service';
 import { Vehicles } from '@prisma/client';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
@@ -9,15 +9,21 @@ jest.mock('../../services/vehicle.service');
 
 describe('VehicleController', () => {
   let vehicleController: VehicleController;
-  let mockedVehicleService = vehicleService as jest.Mocked<typeof vehicleService>;
+  let mockedVehicleService: jest.Mocked<VehicleService>;
   let req: Partial<Request>;
   let res: Partial<Response>;
 
   beforeEach(() => {
+    mockedVehicleService =  {
+        createVehicle: jest.fn(),
+        deleteVehicle: jest.fn(),
+        updateVehicle: jest.fn(),
+        getVehicleById: jest.fn(),
+        getVehicles: jest.fn(),
+    } as unknown as jest.Mocked<VehicleService>;
+
     vehicleController = new VehicleController();
-    mockedVehicleService = vehicleService as jest.Mocked<typeof vehicleService>;
-
-
+    vehicleController['vehicleService'] = mockedVehicleService;
 
     req = {};
     res = {

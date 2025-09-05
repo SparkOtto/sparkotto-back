@@ -2,13 +2,16 @@ import VehicleService from '../vehicle.service';
 import VehicleDAO from '../../dao/vehicle.dao';
 import {Vehicles} from '@prisma/client';
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import {ErrorMessages} from "../../command/errorMessages";
+import {Messages} from "../../command/messages";
+import TripDAO from "../../dao/trip.dao";
 
 jest.mock('../../dao/vehicle.dao');
+jest.mock('../../dao/trip.dao');
 
 describe('VehicleService', () => {
     let vehicleService: VehicleService;
     let mockVehicleDAO: jest.Mocked<VehicleDAO>;
+    let mockedTripDAO: jest.Mocked<TripDAO>;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -21,9 +24,13 @@ describe('VehicleService', () => {
             createVehicleStateRecord: jest.fn(),
         } as any;
 
+        mockedTripDAO = {
+            getTripsByVehicle: jest.fn(),
+        } as any;
+
         // Mock the constructor to return our mock
         (VehicleDAO as jest.MockedClass<typeof VehicleDAO>).mockImplementation(() => mockVehicleDAO);
-
+        (TripDAO as jest.MockedClass<typeof TripDAO>).mockImplementation(() => mockedTripDAO);
         vehicleService = new VehicleService();
     });
 
@@ -71,7 +78,7 @@ describe('VehicleService', () => {
         it('should throw error if license plate exists', async () => {
             mockVehicleDAO.getVehicles.mockResolvedValue([{license_plate: 'AA-123-BB'} as Vehicles]);
 
-            await expect(vehicleService.createVehicle({license_plate: 'AA-123-BB'} as any)).rejects.toThrow(ErrorMessages.Vehicle.LICENSE_PLATE_EXISTS);
+            await expect(vehicleService.createVehicle({license_plate: 'AA-123-BB'} as any)).rejects.toThrow(Messages.Vehicle.LICENSE_PLATE_EXISTS);
         });
     });
 
@@ -114,7 +121,7 @@ describe('VehicleService', () => {
                 transmissionId: 1
             };
 
-            await expect(vehicleService.updateVehicle(1, emptyVehicle)).rejects.toThrow(ErrorMessages.Vehicle.NOT_FOUND(1));
+            await expect(vehicleService.updateVehicle(1, emptyVehicle)).rejects.toThrow(Messages.Vehicle.NOT_FOUND(1));
         });
     });
 
@@ -141,16 +148,22 @@ describe('VehicleService', () => {
     describe('deleteVehicle', () => {
         it('should delete vehicle if it exists', async () => {
             mockVehicleDAO.getVehicleById.mockResolvedValue({id_vehicle: 1} as Vehicles);
+            mockedTripDAO.getTripsByVehicle.mockResolvedValue([]);
             mockVehicleDAO.deleteVehicle.mockResolvedValue({id_vehicle: 1} as Vehicles);
 
             const result = await vehicleService.deleteVehicle(1);
             expect(result).toEqual({id_vehicle: 1});
         });
+        it('should throw error if vehicle has active trips', async () => {
+            mockVehicleDAO.getVehicleById.mockResolvedValue({id_vehicle: 1} as Vehicles);
+            mockedTripDAO.getTripsByVehicle.mockResolvedValue([{id_trip: 1, status: 'active'}] as any);
 
+            await expect(vehicleService.deleteVehicle(1)).rejects.toThrow(Messages.Vehicle.DELETE_FAILED(1));
+        });
         it('should throw error if vehicle does not exist', async () => {
             mockVehicleDAO.getVehicleById.mockResolvedValue(null);
 
-            await expect(vehicleService.deleteVehicle(99)).rejects.toThrow(ErrorMessages.Vehicle.NOT_FOUND(99));
+            await expect(vehicleService.deleteVehicle(99)).rejects.toThrow(Messages.Vehicle.NOT_FOUND(99));
         });
     });
 });

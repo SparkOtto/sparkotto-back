@@ -3,6 +3,7 @@ import VehicleService from './vehicle.service';
 import KeyService from './key.service';
 import { TRIP_STATUS, canReturnVehicle, isActiveTrip } from '../models/tripStatus';
 import VehicleStateService, { VEHICLE_STATE_TYPE } from './vehicleState.service';
+import {Messages} from "../command/messages";
 
 class TripService {
     private dao: TripDAO;
@@ -86,7 +87,7 @@ class TripService {
         // Récupérer le voyage
         const trip = await this.dao.getTripById(tripId);
         if (!trip) {
-            throw new Error('Voyage non trouvé');
+            throw new Error(Messages.Trip.NOT_FOUND);
         }
 
         // Vérifier que le voyage peut être restitué
@@ -96,7 +97,7 @@ class TripService {
 
         // Vérifier si le voyage n'est pas déjà terminé par la date
         if (trip.end_date < new Date()) {
-            throw new Error('Ce voyage est déjà expiré');
+            throw new Error(Messages.Trip.ALREADY_EXPIRED);
         }
 
         // Créer l'état des lieux d'arrivée si fourni
@@ -115,7 +116,7 @@ class TripService {
         // Mettre à jour le kilométrage du véhicule
         const currentVehicle = await this.vehicleService.getVehicleById(trip.id_vehicle);
         if (!currentVehicle) {
-            throw new Error('Véhicule non trouvé');
+            throw new Error(Messages.Vehicle.NOT_FOUND(trip.id_vehicle));
         }
         
         await this.vehicleService.updateVehicle(trip.id_vehicle, {
@@ -140,7 +141,7 @@ class TripService {
         return {
             trip: updatedTrip,
             vehicleState: vehicleState,
-            message: 'Véhicule restitué avec succès'
+            message: Messages.Trip.V
         };
     }
 
