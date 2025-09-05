@@ -82,6 +82,45 @@ class UserDAO {
     });
     return user?.role || null;
   }
+
+  // Gestion des tentatives de connexion
+  async incrementFailedAttempts(id: number): Promise<User> {
+    return this.prisma.user.update({
+      where: { id_user: id },
+      data: {
+        failed_attempts: { increment: 1 }
+      }
+    });
+  }
+
+  async resetFailedAttempts(id: number): Promise<User> {
+    return this.prisma.user.update({
+      where: { id_user: id },
+      data: {
+        failed_attempts: 0
+      }
+    });
+  }
+
+  async lockAccount(id: number): Promise<User> {
+    return this.prisma.user.update({
+      where: { id_user: id },
+      data: {
+        account_locked: true,
+        failed_attempts: 0
+      }
+    });
+  }
+
+  async unlockAccount(id: number): Promise<User> {
+    return this.prisma.user.update({
+      where: { id_user: id },
+      data: {
+        account_locked: false,
+        failed_attempts: 0
+      }
+    });
+  }
 }
 
 export default UserDAO;
