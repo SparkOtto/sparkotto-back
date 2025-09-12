@@ -25,8 +25,18 @@ class VehicleDAO {
             fuel_type: { connect: { id_fuel: fuelTypeId } },
             transmission: { connect: { id_transmission: transmissionId } },
             trips: { create: [] },
+            state_records: { create: [] },
             },
-            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
+            include: { 
+                fuel_type: true, 
+                transmission: true, 
+                agency: true, 
+                trips: true, 
+                keys: { 
+                    include: { agency: true }
+                },
+                state_records: true
+            },
         });
 
         await this.prisma.keys.createManyAndReturn({
@@ -47,7 +57,7 @@ class VehicleDAO {
         // Retourner le véhicule avec les clés ajoutées
         return await this.prisma.vehicles.findUnique({
             where: { id_vehicle: newVehicle.id_vehicle },
-            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
+            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true } }, state_records: true },
         }) as Vehicles;
     }
 
@@ -69,7 +79,7 @@ class VehicleDAO {
                 trips: { create: [] }, // Do not modify trips on update
                 keys: { create: [] }, // Do not modify keys on update
             },
-            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true }} },
+            include: { fuel_type: true, transmission: true, agency: true, trips: true, keys: { include: { agency: true } }, state_records: true },
         });
     }
 
@@ -117,7 +127,8 @@ class VehicleDAO {
                 },
                 keys: { 
                     include: { agency: true }
-                } 
+                },
+                state_records: true
             },
         });
     }
@@ -141,7 +152,8 @@ class VehicleDAO {
                     },
                     keys: { 
                         include: { agency: true }
-                    } 
+                    },
+                    state_records: true
                 },
             });
     }
