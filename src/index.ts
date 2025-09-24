@@ -6,7 +6,7 @@ import * as OpenApiValidator from 'express-openapi-validator';
 import path from "path";
 import fs from "fs";
 import * as yaml from 'yaml';
-
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -14,8 +14,19 @@ const app = express();
 
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,                 // Autorise l’envoi des cookies
+}));
+
 app.use(express.json());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  console.log('Cookies reçus:', req.cookies);
+  next();
+});
+
 
 app.get("/", (req, res) => {
     res.send("🚀 Sparkotto Backend is running!");

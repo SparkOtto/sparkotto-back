@@ -1,12 +1,17 @@
 import { Request, Response } from 'express';
-import { vehicleService } from '../services/vehicle.service';
+import VehicleService from '../services/vehicle.service';
 
 class VehicleController {
+  private vehicleService: VehicleService;
+
+  constructor() {
+    this.vehicleService = new VehicleService();
+  }
   // POST /api/vehicles
   async createVehicle(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
-      const created = await vehicleService.createVehicle(data);
+      const created = await this.vehicleService.createVehicle(data);
       res.status(201).json(created);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -18,12 +23,28 @@ class VehicleController {
     try {
       const id = parseInt(req.params.id);
       const data = req.body;
-      const updated = await vehicleService.updateVehicle(id, data);
+      const updated = await this.vehicleService.updateVehicle(id, data);
       res.status(200).json(updated);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
     }
   }
+
+  // GET /api/vehicles/:id
+  async getVehicleById(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id);
+      const vehicle = await this.vehicleService.getVehicleById(id);
+      if (vehicle) {
+        res.status(200).json(vehicle);
+      } else {
+        res.status(404).json({ message: 'Vehicle not found' });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
 
   // GET /api/vehicles
   async getVehicles(req: Request, res: Response): Promise<void> {
@@ -35,7 +56,7 @@ class VehicleController {
         maxMileage: req.query.maxMileage ? parseInt(req.query.maxMileage as string) : undefined,
         model: req.query.model as string,
       };
-      const list = await vehicleService.getVehicles(filters);
+      const list = await this.vehicleService.getVehicles(filters);
       res.status(200).json(list);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -45,7 +66,7 @@ class VehicleController {
   async deleteVehicle(req: Request, res: Response): Promise<void> {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await vehicleService.deleteVehicle(id);
+      const deleted = await this.vehicleService.deleteVehicle(id);
       res.status(200).json(deleted);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
