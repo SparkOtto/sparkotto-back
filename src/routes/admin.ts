@@ -11,8 +11,8 @@ router.put('/toggleUserStatus', (req: Request, res: Response) => {
 router.post('/resentConfirmation', (req: Request, res: Response) => {
     adminController.validUserWithEmail(req, res);
 });
-router.post('/resentConfirmation', (req: Request, res: Response) => {
-    adminController.validUserWithEmail(req, res);
+router.post('/confirm', (req: Request, res: Response) => {
+    adminController.confirmUserAccount(req, res);
 });
 
 
