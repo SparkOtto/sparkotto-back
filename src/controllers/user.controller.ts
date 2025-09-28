@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import Checkutils from "../command/checkutils";
 import AdminService from "../services/admin.service";
 import EmailService from "../services/email.service";
+import {User} from "@prisma/client";
+import userDao from "../dao/user.dao";
 
 class UserController {
   private userService: UserService;
@@ -16,28 +18,54 @@ class UserController {
     this.emailService = new EmailService();
   }
 
-  // Créer un nouvel utilisateur
+  /**
+   * Créer un nouvel tilisateur
+   */
   async createUser(req: Request, res: Response): Promise<void> {
     try {
-      const userData = req.body;
-      const validateEmail = await this.adminService.validateDomaine(userData.email);
-      console.log('Corps reçu dans createUser :', req.body);
-      if(!validateEmail.valid){
-        res.status(400).json({ message: validateEmail.error });
+      const userData:User = req.body;
+
+      // Valider que le mail est présent et valide
+      if (!userData.email) {
+        res.status(400).json({
+          message: "Email invalide ou manquant"
+        });
         return;
       }
+
+      // védifier si le domaine est autorisé
+      const mailValid = await this.adminService.validateDomaine(userData.email);
+      if (!mailValid.valid) {
+        res.status(400).json({
+          message: "Email non autorisé, veuillez vous inscrire avec votre email professionnel"
+        })
+        return;
+      }
+
+      // Créer et activer le compte utilisateur
+      userData.active = true;
       const newUser = await this.userService.createUser(userData);
 
-      //email avec token
-      console.log('controller : Appel de la méthode sendToken');
-      await this.emailService.sendToken(newUser);
-      res.status(201).json(newUser);
-    } catch (error : any) {
-      res.status(400).json({ message: error.message });
+      // Envoyer un email de confirmation
+      await this.emailService.sendConfirmationEmail(newUser);
+
+      res.status(201).json({
+        message: "Votre compte a été crée. Un email de confirmation vous a été envoyé.",
+        user: newUser
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        message: 'Une erreur est survenue lors de la création du compte utilisateur',
+        detail: error.message
+      });
     }
   }
 
-  // Obtenir un utilisateur par son ID
+  /**
+   * Obtenir un utilisateur par son ID
+   * @param req
+   * @param res
+   */
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const id = parseInt(req.params.id);
@@ -52,7 +80,11 @@ class UserController {
     }
   }
 
-  // Obtenir tous les utilisateurs
+  /**
+   * Obtenir tous les utilisateurs
+   * @param req
+   * @param res
+   */
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       const users = await this.userService.getAllUsers();
@@ -64,7 +96,11 @@ class UserController {
     }
   }
 
-  // Changer le mot de passe d'un utilisateur
+  /**
+   * Changer le mot de passe d'un utilisateur
+   * @param req
+   * @param res
+   */
   async changePassword(req: Request, res: Response): Promise<void> {
     try {
       const id = parseInt(req.params.id);

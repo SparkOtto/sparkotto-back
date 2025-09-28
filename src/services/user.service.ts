@@ -31,11 +31,7 @@ class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    const existingUser = await this.userDAO.getUserByEmail(email);
-    if(!existingUser) {
-      throw new Error('Utilisateur non trouvé');
-    }
-    return existingUser;
+    return this.userDAO.getUserByEmail(email);
   }
 
   async getAllUsers(): Promise<User[]> {

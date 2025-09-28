@@ -39,7 +39,7 @@ class AdminController {
                 // Envoyer l'email avec le lien de confirmation
                 await this.emailService.sendToken(user);
             } else {
-                return res.status(404).json({error: "Utilisateur non trouvé."})
+                return res.status(404).json({error: "Compte utilisateur non trouvé."})
             }
 
 
