@@ -2,7 +2,6 @@ import {Domaines, User} from "@prisma/client";
 import UserDAO from "../dao/user.dao";
 import DomaineDao from "../dao/domaine.dao";
 import {Request, Response} from "express";
-import jwt from "jsonwebtoken";
 
 
 class AdminService {
@@ -15,49 +14,19 @@ class AdminService {
     }
 
     /**
-     * Jeton de contrôle du mail de confirmation
-     * @param req
-     * @param res
-     */
-    async confirmUser(req: Request, res: Response): Promise<void> {
-        try {
-            const token = req.query.token as string;
-            if (!token) {
-                res.status(400).json({message: "Token non fourni"});
-                return;
-            }
-            //Védification du token
-            const secretKey = process.env.JWT_SECRET || "your_secret_key";
-            console.log("tocken reçu: ", token);
-            const decoded = jwt.verify(token, secretKey) as jwt.JwtPayload;
-            if (!decoded || !decoded.userId) {
-                throw new Error("l'ID utilisateur n'est pas présent dans le token");
-            }
-            const userId = decoded.userId as number;
-
-            // Activation du compte en base
-            await this.toggleUserStatus(decoded.userId, true);
-
-            res.status(200).json({message: "Compte activé avec succès !"});
-        } catch (error) {
-            res.status(400).json({message: "Token invalide ou expiré"});
-        }
-    }
-
-    /**
      * Fonction pour activer ou désactiver un utilisateur
      * @param id
      * @param isActive
      */
-    async toggleUserStatus(id: number, isActive: boolean): Promise<User> {
+    async toggleUserStatus(id: number, isActive: boolean): Promise<User>{
         //S'assurer que l'ID de l'utilisateur existe en base
         const userExist = await this.userDAO.getUserById(id);
-        if (!userExist) {
+        if(!userExist){
             throw new Error('L\'utilisateur n\'a pas été trouvé');
         }
         const userData = {
             active: isActive,
-            deactivation_date: isActive ? null : new Date(),
+            deactivation_date: isActive ? null : new Date() ,
         };
         return this.userDAO.updateUser(id, userData);
     }
@@ -94,7 +63,19 @@ class AdminService {
         }
     }
 
-
+    /**
+     * Bloquer ou débloquer un utilisateur
+     * @param id
+     * @param isLocked
+     */
+    async lockUnlockUser(id: number, isLocked: boolean): Promise<User>{
+        const userExist = await this.userDAO.getUserById(id);
+        if(!userExist){
+            throw new Error('L\'utilisateur n\'a pas été trouvé');
+        }
+        const userData = {account_locked: isLocked};
+        return this.userDAO.updateUser(id, userData);
+    }
 }
 
 export default AdminService;

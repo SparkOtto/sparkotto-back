@@ -14,7 +14,7 @@ model Vehicles {
   transmission   Transmissions         @relation(fields: [transmissionId], references: [id_transmission])
   transmissionId Int
   maintenance    MaintenanceRecords[]
-  keys           Keys?
+  keys           Keys[]
   state_records  VehicleStateRecords[]
   trips          Trips[]
 }
@@ -40,20 +40,12 @@ model MaintenanceRecords {
 }
 
 model Keys {
-  id_key        Int          @id @default(autoincrement())
-  key_name      String
-  key_location  KeyLocations @relation(fields: [keyLocationId], references: [id_key_location])
-  keyLocationId Int
-  vehicle_key   Vehicles?    @relation(fields: [vehicleKeyId], references: [id_vehicle])
-  vehicleKeyId  Int?         @unique
-  trips         Trips[]
-}
-
-model KeyLocations {
-  id_key_location Int      @id @default(autoincrement())
-  agency_id       Int
-  agency          Agencies @relation(fields: [agency_id], references: [id_agency])
-  office          String
-  comment         String?
-  keys            Keys[]
+  id_key       Int       @id @default(autoincrement())
+  key_name     String
+  agency_id    Int
+  agency       Agencies  @relation(fields: [agency_id], references: [id_agency])
+  comment      String?
+  vehicle_key  Vehicles? @relation(fields: [vehicleKeyId], references: [id_vehicle])
+  vehicleKeyId Int
+  trips        Trips[]
 }

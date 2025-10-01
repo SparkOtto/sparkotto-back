@@ -9,7 +9,9 @@ model Trips {
   start_date         DateTime
   end_date           DateTime
   departure_agency   Int
+  agency_departure   Agencies?    @relation("DepartureAgency", fields: [departure_agency], references: [id_agency])
   arrival_agency     Int
+  agency_arrival     Agencies?    @relation("ArrivalAgency", fields: [arrival_agency], references: [id_agency])
   reservation_status String
   carpooling         Boolean
   meeting_time       DateTime?

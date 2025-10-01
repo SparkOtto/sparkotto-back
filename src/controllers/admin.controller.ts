@@ -2,7 +2,6 @@ import {Request, Response} from "express";
 import AdminService from '../services/admin.service';
 import UserService from "../services/user.service";
 import EmailService from "../services/email.service";
-import jwt from "jsonwebtoken";
 
 class AdminController {
     private adminService: AdminService;
@@ -16,91 +15,96 @@ class AdminController {
     }
 
     /**
-     * Si l'utilisateur demande à reçevoir un nouveau mail de confirmation
-     */
-    async validUserWithEmail(req: Request, res: Response): Promise<Response> {
-        const {email, userId} = req.body;
-
-        if (!email || !userId || typeof userId != "number") {
-            return res.status(400).json({error: "Email ou user invalid"})
-        }
-
-        try {
-            const result = await this.adminService.validateDomaine(email);
-
-            if (!result.valid) {
-                return res.status(400).json({error: result.error});
-            }
-
-            // Récupère l'objet utilisateur pour l'utiliser dans sendToken
-            const user = await this.userService.getUserById(userId);
-
-            if (user) {
-                // Envoyer l'email avec le lien de confirmation
-                await this.emailService.sendToken(user);
-            } else {
-                return res.status(404).json({error: "Compte utilisateur non trouvé."})
-            }
-
-
-            return res.status(200).json({message: "Email envoyé pour confirmation."});
-        } catch (error) {
-            return res.status(500).json({error: "Erreur lors de la validation de l'email ou de l'envoi du mail."});
-        }
-    }
-
-    /**
      * Activer ou désactiver un profil utilisateur
      * @param req
      * @param res
      */
     async toggleUserStatus(req: Request, res: Response): Promise<Response> {
+        const id = parseInt(req.params.id);
+        const isActive = req.body.isActive;
         try {
-            const token = req.query.token as string;
-            if (!token) {
-                return res.status(400).json({error: 'Token manquant'});
-            }
-
-            const decoded = jwt.verify(token, process.env.JWT_SECRET!) as unknown as { id: number };
-            const id = decoded.id;
-
-            const isActive = req.body;
-
             const updateUser = await this.adminService.toggleUserStatus(id, isActive);
             return res.status(200).json(updateUser);
         } catch (error) {
-            return res.status(500).json({error: 'Erreur lors de la mise à jour de l\'utilisateur ou token invalide'});
+            return res.status(500).json({error: 'Erreur lors de la mise à jour de l\'utilisateur'});
         }
     }
 
-    async confirmUserAccount(req: Request, res: Response) {
+    /**
+     * Débloquer un utilisateur pour valider sa première inscription
+     * ou supprimer ses données en base si l'inscription est refusée
+     * @param req
+     * @param res
+     */
+    async activateUserAccount(req: Request, res: Response): Promise<Response> {
+        const id = parseInt(req.params.id);
+        const isApproved = req.body; // true pour inscription acceptée ou false si refusée
+        const updatedUser = await this.adminService.toggleUserStatus(id, true);
+
+        if (typeof isApproved !== 'boolean') {
+            throw new Error("Données invalides, si l'erreur persiste, veuillez contacter votre administrateur");
+        }
+
         try {
-            const token = req.query.token as string;
-            if (!token) {
-                return res.status(400).json({error: 'Token manquant'});
+            if (isApproved) {
+                await this.emailService.sendConfirmationEmail(updatedUser); // email de validation
+            } else {
+                await this.emailService.sendRejectionEmail(updatedUser); // email de refus
+                await this.userService.deleteUser(id); // supprimer les données en bdd
             }
 
-            const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: number };
-            const userId = decoded.userId;
+            return res.status(200).json({
+                message: isApproved
+                    ? 'Inscription validée, un email de confirmation a été envoyé à l\'utilisateur'
+                    : 'Inscription refusée, un email de confirmation a été envoyé à l\'utilisateur',
+                user: updatedUser,
+            });
+        } catch (error) {
+            return res.status(500).json({error: 'Erreur lors du taitement de l\'inscription de l\'utilisateur.'});
+        }
+    }
 
-            const user = await this.userService.getUserById(userId);
-            if (!user) {
-                return res.status(404).json({error: 'Utilisateur introuvable'});
+    async lockUnlockUser(req: Request, res: Response): Promise<Response> {
+        try {
+            const { id, isLocked } = req.body;
+
+            if (typeof id !== "number" || typeof isLocked !== "boolean") {
+                return res.status(400).json({ message: "Données invalides" });
             }
 
-            if (user.active) {
-                return res.status(200).json({message: 'Compte déjà activé'});
+            const user = await this.adminService.lockUnlockUser(id, isLocked);
+
+            // Envoyer des emails de notification
+            try {
+                if (isLocked) {
+                    // Compte bloqué - pas d'email spécifique car c'est une action admin
+                } else {
+                    // Compte débloqué - envoyer email de confirmation
+                    await this.emailService.sendAccountUnlockedEmail(user.email, user.first_name);
+                }
+            } catch (emailError) {
+                console.error('Erreur lors de l\'envoi de l\'email:', emailError);
+                // On continue même si l'email échoue
             }
 
-            const updatedUser = await this.userService.updateUser(userId, {active: true});
-            await this.emailService.sendConfirmationEmail(updatedUser);
+            return res.status(200).json({
+                message: isLocked
+                    ? 'Le compte utilisateur a été bloqué'
+                    : 'Le compte utilisateur a été débloqué',
+                user: {
+                    id: user.id_user,
+                    email: user.email,
+                    account_locked: user.account_locked
+                }
+            });
 
-            return res.status(200).json({message: 'Compte activé avec succès', user: updatedUser});
-        } catch (error: any) {
-            return res.status(400).json({error: 'Lien invalide ou expiré', details: error.message});
+        } catch (error) {
+            console.error('Erreur dans lockUnlockUser:', error);
+            return res.status(500).json({
+                message: 'Une erreur s\'est produite, si le problème persiste, veuillez contacter votre administrateur'
+            });
         }
     }
 }
-    export
-    default
-    AdminController;
+
+export default AdminController;
