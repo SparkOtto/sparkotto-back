@@ -1,0 +1,87 @@
+import { Request, Response } from 'express';
+import TripService from '../services/trip.service';
+
+class TripController {
+    private service: TripService;
+
+    constructor() {
+        this.service = new TripService();
+    }
+
+    async createTrip(req: Request, res: Response): Promise<void> {
+        try {
+            const trip = await this.service.createTrip(req.body);
+            res.status(201).json(trip);
+        } catch (error : any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async updateTrip(req: Request, res: Response): Promise<void> {
+        try {
+            const tripId = parseInt(req.params.tripId);
+            const updatedTrip = await this.service.updateTrip(tripId, req.body);
+            res.status(200).json(updatedTrip);
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async getMyTrips(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = parseInt(req.params.id);
+            const trips = await this.service.getTripsByUser(userId);
+            res.status(200).json(trips);
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async getTrips(req: Request, res: Response): Promise<void> {
+        try {
+            const trips = await this.service.getTrips();
+            res.status(200).json(trips);
+        } catch (error) {
+            res.status(500).json({ error: 'Erreur lors de la récupération des voyages.' });
+        }
+    }
+
+    async getTripsByVehicle(req: Request, res: Response): Promise<void> {
+        try {
+            const { id_vehicle } = req.params;
+            const trips = await this.service.getTripsByVehicle(Number(id_vehicle));
+            res.status(200).json(trips);
+        } catch (error) {
+            res.status(500).json({ error: 'Erreur lors de la récupération des voyages.' });
+        }
+    }
+
+    /**
+     * PUT /api/trips/return/:tripId
+     * Restituer un véhicule en terminant le voyage
+     */
+    async returnVehicle(req: Request, res: Response): Promise<void> {
+        try {
+            const tripId = parseInt(req.params.tripId);
+            const { 
+                mileage, 
+                current_location_agency_id, 
+                key_location_id,
+                vehicle_state 
+            } = req.body;
+
+            const result = await this.service.returnVehicle(tripId, {
+                mileage,
+                current_location_agency_id,
+                key_location_id,
+                vehicle_state
+            });
+
+            res.status(200).json(result);
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+}
+
+export default TripController;

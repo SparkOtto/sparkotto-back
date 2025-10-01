@@ -21,26 +21,34 @@ describe('AuthController', () => {
         authController = new AuthController();
         authController['userService'] = userService;
 
+        req = {
+            cookies: {},
+        } as Partial<Request>;
+
         req = {};
         res = {
             status: jest.fn().mockReturnThis() as jest.MockedFunction<(code: number) => Response>,
             json: jest.fn().mockReturnThis() as jest.MockedFunction<Response['json']>,
-        };
+            cookie: jest.fn().mockReturnThis(),
+        } as Partial<Response>;
     });
 
     describe('login', () => {
         it('should return a token for valid credentials', async () => {
             const user: User = {
-                id_user: 1, email: 'test@test.com', first_name: 'Test User', password: 'hashedPassword',
+                id_user: 1,
+                email: 'test@test.com',
+                first_name: 'Test User',
+                password: 'hashedPassword',
                 last_name: '',
                 phone_number: null,
                 roleId: 1,
                 agency_id: null,
                 license_number: null,
-                failed_attempts: null,
+                failed_attempts: 0,
                 account_locked: false,
-                active: false,
-                deactivation_date: null,
+                active: true,
+                deactivation_date: null
             };
             userService.getUserByEmail.mockResolvedValue(user);
             (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
@@ -49,6 +57,10 @@ describe('AuthController', () => {
             req.body = { email: 'test@test.com', password: 'password123' };
 
             await authController.login(req as Request, res as Response);
+
+            // Debug: check what status was actually called with
+            // console.log((res.status as jest.Mock).mock.calls);
+
             const userFormat = {
                 id: 1,
                 first_name: 'Test User',
@@ -56,7 +68,8 @@ describe('AuthController', () => {
                 email: 'test@test.com',
                 phone_number: null,
                 role: undefined
-            }
+            };
+
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ token: 'token', user: userFormat });
         });

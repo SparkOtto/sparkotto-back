@@ -60,7 +60,7 @@ class UserController {
         return;
       }
       const passwordEmpty = !Checkutils.empty(req.body.newPassword) && !Checkutils.empty(req.body.confirmPassword);
-      if(passwordEmpty && req.body.newPassword === req.body.confirmPassword) {
+      if(passwordEmpty && req.body.newPassword !== req.body.confirmPassword) {
         res.status(400).json({ message: 'Les mots de passe ne correspondent pas' });
         return;
       }
