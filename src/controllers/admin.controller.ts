@@ -73,7 +73,7 @@ class AdminController {
             }
 
             const user = await this.adminService.lockUnlockUser(id, isLocked);
-            
+
             // Envoyer des emails de notification
             try {
                 if (isLocked) {
@@ -97,11 +97,11 @@ class AdminController {
                     account_locked: user.account_locked
                 }
             });
-            
+
         } catch (error) {
             console.error('Erreur dans lockUnlockUser:', error);
-            return res.status(500).json({ 
-                message: 'Une erreur s\'est produite, si le problème persiste, veuillez contacter votre administrateur' 
+            return res.status(500).json({
+                message: 'Une erreur s\'est produite, si le problème persiste, veuillez contacter votre administrateur'
             });
         }
     }

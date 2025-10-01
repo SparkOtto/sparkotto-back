@@ -1,5 +1,9 @@
 import nodemailer from "nodemailer";
 import {User} from "@prisma/client";
+import {google} from "googleapis";
+import user from "../routes/user";
+import Mail from "nodemailer/lib/mailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 class EmailService {
 
@@ -71,7 +75,7 @@ class EmailService {
      */
     async sendPasswordResetEmail(email: string, resetToken: string, firstName: string): Promise<void> {
         const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
-        
+
         const subject = 'Réinitialisation de votre mot de passe - SparkOtto';
         const htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

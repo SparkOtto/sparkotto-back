@@ -14,16 +14,6 @@ router.put(
         adminController.toggleUserStatus(req, res);
     }
 );
-
-router.post(
-    '/activateUserAccount',
-    authenticateToken,
-    authorizeRoles(['admin']),
-    (req, res) => {
-        adminController.activateUserAccount(req, res);
-    }
-);
-
 router.post(
     "/lockUnlockUser",
     authenticateToken,
@@ -32,5 +22,6 @@ router.post(
         adminController.lockUnlockUser(req, res);
     }
 );
+
 
 export default router;

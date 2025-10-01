@@ -1,11 +1,16 @@
-import {User} from "@prisma/client";
+import {Domaines, User} from "@prisma/client";
 import UserDAO from "../dao/user.dao";
+import DomaineDao from "../dao/domaine.dao";
+import {Request, Response} from "express";
+
 
 class AdminService {
     public userDAO: UserDAO;
+    public domaineDAO: DomaineDao;
 
     constructor() {
         this.userDAO = new UserDAO();
+        this.domaineDAO = new DomaineDao();
     }
 
     /**
@@ -27,6 +32,38 @@ class AdminService {
     }
 
     /**
+     * Contrôle sur le domaine de l'adresse mail renseignée est
+     * dans la liste des domaines autorisés
+     * @param email
+     */
+    async validateDomaine(email: string) {
+        if (!email) {
+            return {valid: false, error: "Email non fourni"};
+        }
+
+        // Vérification du format de l'email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return {valid: false, error: "Format d'email invalide"};
+        }
+
+        // Tester la valeur du domaine
+        const domaine = email.split('@')[1];
+        try {
+            // requête pour tester le domaine
+            const domaineAutorise = await this.domaineDAO.getDomaine(domaine);
+
+            if (domaineAutorise) {
+                return {valid: true, domaine}
+            } else {
+                return {valid: false, error: `Domaine '${domaine}' non autorisé`};
+            }
+        } catch (error) {
+            return {valid: false, error: "Erreur lors de la vérification du domaine"};
+        }
+    }
+
+    /**
      * Bloquer ou débloquer un utilisateur
      * @param id
      * @param isLocked
@@ -40,4 +77,5 @@ class AdminService {
         return this.userDAO.updateUser(id, userData);
     }
 }
+
 export default AdminService;

@@ -5,7 +5,7 @@ import AdminService from "../admin.service";
 jest.mock('../../dao/user.dao')
 
 /**
- * test toggleUserStatus
+ * test
  */
 describe('AdminService', () => {
     let adminService: AdminService;

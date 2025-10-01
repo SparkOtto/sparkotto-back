@@ -12,3 +12,8 @@ model Agencies {
   trips_departure  Trips[] @relation("DepartureAgency")
   trips_arrival    Trips[] @relation("ArrivalAgency")
 }
+
+model Domaines {
+  id_domaine   Int    @id @default(autoincrement())
+  domaine_name String @unique
+}
