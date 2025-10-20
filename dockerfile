@@ -1,12 +1,12 @@
 # Étape 1 : Build de l'application
 FROM node:lts-alpine AS build
-
+RUN apk add --no-cache git
 WORKDIR /app
 
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
-RUN apk add --no-cache git
+
 
 COPY package.json package-lock.json ./
 RUN npm install --include=dev
@@ -23,7 +23,7 @@ RUN npm run build:seed
 
 # Étape 2 : Exécution en production
 FROM node:lts-alpine
-
+RUN apk add --no-cache git
 WORKDIR /app
 
 # 🔧 Installer le client PostgreSQL
