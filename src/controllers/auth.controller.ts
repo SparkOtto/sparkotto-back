@@ -146,35 +146,6 @@ class AuthController {
     }
 
     /**
-     * Vérification du token utilisateur
-     * @param req
-     * @param res
-     */
-    async verifyToken(req: Request, res: Response): Promise<void> {
-        const token = req.cookies.token;
-
-        console.log("Token reçu :", token);
-
-        if (!token) {
-            res.status(401).json({ valid: false, message: 'Token manquant' });
-            return;
-        }
-
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role: string };
-
-            // Vérification de l'existence de l'utilisateur
-            res.status(200).json({
-                valid: true,
-                id: decoded.id,
-                role: decoded.role,
-            });
-        } catch (error) {
-            res.status(403).json({ valid: false, message: 'Token invalide' });
-        }
-    }
-
-    /**
      * Demande de réinitialisation de mot de passe
      * @param req
      * @param res
