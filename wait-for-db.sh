@@ -18,6 +18,7 @@ npx prisma db seed
 
 ls -lah /app
 ls -lah /app/dist
+ls -lah /app/prisma
 
 echo "🚀 Lancement de l'application Node.js"
 node dist/index.js
