@@ -3,14 +3,14 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Référentiels
-  await prisma.fuelTypes.createMany({
-    data: [
-      { id_fuel: 1, fuel_name: 'Essence' },
-      { id_fuel: 2, fuel_name: 'Diesel' },
-      { id_fuel: 3, fuel_name: 'Électrique' },
-    ],
-    skipDuplicates: true,
-  });
+    await prisma.fuelTypes.createMany({
+        data: [
+          { id_fuel: 1, fuel_name: 'Essence' },
+          { id_fuel: 2, fuel_name: 'Diesel' },
+          { id_fuel: 3, fuel_name: 'Électrique' },
+        ],
+        skipDuplicates: true,
+    });
 
     await prisma.roles.createMany({
         data: [
