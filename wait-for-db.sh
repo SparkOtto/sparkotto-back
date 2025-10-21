@@ -17,6 +17,7 @@ echo "🌱 Prisma seed..."
 npx prisma db seed
 
 ls -lah /app
+ls -lah /app/dist
 
 echo "🚀 Lancement de l'application Node.js"
-ts-node src/index.ts
+node dist/index.js
