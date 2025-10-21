@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "prisma/**/*", "jest.config.ts", "wait-for-db.sh"],
-  "exclude": ["node_modules", "**/*.jest.ts"]
+  "include": ["src/**/*", "prisma/**/*", "jest.config.ts", "wait-for-db.sh", "node_modules"],
+  "exclude": ["**/*.jest.ts"]
 }
