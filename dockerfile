@@ -1,7 +1,7 @@
 # ---- Étape 1 : Build ----
 FROM node:lts-alpine AS build
 WORKDIR /app
-
+RUN apk add --no-cache git
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 
