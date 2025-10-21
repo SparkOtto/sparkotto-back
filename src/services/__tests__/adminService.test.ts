@@ -33,9 +33,24 @@ describe('AdminService', () => {
             active: true,
             deactivation_date: null,
         };
+        const userActive = {
+            id_user: 5,
+            first_name: "Test5",
+            last_name: "User5",
+            email: "test5@example.com",
+            phone_number: null,
+            password: "hashed_password",
+            roleId: 1,
+            agency_id: null,
+            license_number: null,
+            failed_attempts: 0,
+            account_locked: false, // Avant le blocage
+            active: true,
+            deactivation_date: null,
+        };  
         jest.spyOn(userDAO, 'getUserById').mockResolvedValue(userTest);
         jest.spyOn(userDAO, 'updateUser').mockResolvedValue({ ...userTest, active: true });
-        const result = await adminService.toggleUserStatus(1, true);
+        const result = await adminService.toggleUserStatus(1, true, userActive);
 
         expect(userDAO.getUserById).toHaveBeenCalledWith(1);
         expect(userDAO.updateUser).toHaveBeenCalledWith(1, { active: true, deactivation_date: null });
@@ -45,7 +60,23 @@ describe('AdminService', () => {
     it('test_toggleUserStatus_erreur', async () => {
         jest.spyOn(userDAO, 'getUserById').mockResolvedValue(null); // utilisateur absent
 
-        await expect(adminService.toggleUserStatus(2, true)).rejects.toThrow('L\'utilisateur n\'a pas été trouvé');
+        const userActive = {
+            id_user: 5,
+            first_name: "Test5",
+            last_name: "User5",
+            email: "test5@example.com",
+            phone_number: null,
+            password: "hashed_password",
+            roleId: 1,
+            agency_id: null,
+            license_number: null,
+            failed_attempts: 0,
+            account_locked: false, // Avant le blocage
+            active: true,
+            deactivation_date: null,
+        };  
+
+        await expect(adminService.toggleUserStatus(2, true, userActive)).rejects.toThrow('L\'utilisateur n\'a pas été trouvé');
         expect(userDAO.getUserById).toHaveBeenCalledWith(2);
         expect(userDAO.updateUser).not.toHaveBeenCalled();
     });
@@ -79,11 +110,26 @@ describe('AdminService', () => {
                 active: true,
                 deactivation_date: null,
             };
+            const userActive = {
+                id_user: 5,
+                first_name: "Test5",
+                last_name: "User5",
+                email: "test5@example.com",
+                phone_number: null,
+                password: "hashed_password",
+                roleId: 1,
+                agency_id: null,
+                license_number: null,
+                failed_attempts: 0,
+                account_locked: false, // Avant le blocage
+                active: true,
+                deactivation_date: null,
+            };   
 
             jest.spyOn(userDAO, "getUserById").mockResolvedValue(userTest);
             jest.spyOn(userDAO, "updateUser").mockResolvedValue({ ...userTest, account_locked: true });
 
-            const result = await adminService.lockUnlockUser(1, true);
+            const result = await adminService.lockUnlockUser(1, true, userActive);
 
             expect(userDAO.getUserById).toHaveBeenCalledWith(1);
             expect(userDAO.updateUser).toHaveBeenCalledWith(1, { account_locked: true });
@@ -106,11 +152,26 @@ describe('AdminService', () => {
                 active: true,
                 deactivation_date: null,
             };
+            const userActive = {
+                id_user: 5,
+                first_name: "Test5",
+                last_name: "User5",
+                email: "test5@example.com",
+                phone_number: null,
+                password: "hashed_password",
+                roleId: 1,
+                agency_id: null,
+                license_number: null,
+                failed_attempts: 0,
+                account_locked: false, // Avant le blocage
+                active: true,
+                deactivation_date: null,
+            };  
 
             jest.spyOn(userDAO, "getUserById").mockResolvedValue(userTest);
             jest.spyOn(userDAO, "updateUser").mockResolvedValue({ ...userTest, account_locked: false });
 
-            const result = await adminService.lockUnlockUser(1, false);
+            const result = await adminService.lockUnlockUser(1, false, userActive);
 
             expect(userDAO.getUserById).toHaveBeenCalledWith(1);
             expect(userDAO.updateUser).toHaveBeenCalledWith(1, { account_locked: false });
@@ -120,7 +181,23 @@ describe('AdminService', () => {
         it("devrait retourner une erreur si l'utilisateur n'existe pas", async () => {
             jest.spyOn(userDAO, "getUserById").mockResolvedValue(null);
 
-            await expect(adminService.lockUnlockUser(2, true)).rejects.toThrow("L'utilisateur n'a pas été trouvé");
+            const userActive = {
+                id_user: 5,
+                first_name: "Test5",
+                last_name: "User5",
+                email: "test5@example.com",
+                phone_number: null,
+                password: "hashed_password",
+                roleId: 1,
+                agency_id: null,
+                license_number: null,
+                failed_attempts: 0,
+                account_locked: false, // Avant le blocage
+                active: true,
+                deactivation_date: null,
+            };  
+
+            await expect(adminService.lockUnlockUser(2, true, userActive)).rejects.toThrow("L'utilisateur n'a pas été trouvé");
 
             expect(userDAO.getUserById).toHaveBeenCalledWith(2);
             expect(userDAO.updateUser).not.toHaveBeenCalled();
@@ -143,10 +220,26 @@ describe('AdminService', () => {
                 deactivation_date: null,
             };
 
+            const userActive = {
+                id_user: 5,
+                first_name: "Test5",
+                last_name: "User5",
+                email: "test5@example.com",
+                phone_number: null,
+                password: "hashed_password",
+                roleId: 1,
+                agency_id: null,
+                license_number: null,
+                failed_attempts: 0,
+                account_locked: false, // Avant le blocage
+                active: true,
+                deactivation_date: null,
+            };  
+
             jest.spyOn(userDAO, "getUserById").mockResolvedValue(userTest);
             jest.spyOn(userDAO, "updateUser").mockRejectedValue(new Error("Erreur de base de données"));
 
-            await expect(adminService.lockUnlockUser(1, true)).rejects.toThrow("Erreur de base de données");
+            await expect(adminService.lockUnlockUser(1, true, userActive)).rejects.toThrow("Erreur de base de données");
 
             expect(userDAO.getUserById).toHaveBeenCalledWith(1);
             expect(userDAO.updateUser).toHaveBeenCalledWith(1, { account_locked: true });
