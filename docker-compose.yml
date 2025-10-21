@@ -42,6 +42,7 @@ services:
       # 👉 Prisma : utilise l’hôte docker "db" + ajoute le schema
       DATABASE_URL: postgresql://postgres:postgres@db:5432/sparkotto?schema=public
       # Pour wait-for-db.sh
+      HOST: 0.0.0.0
       DB_HOST: db
       DB_USER: postgres
       DB_PORT: "5432"
