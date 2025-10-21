@@ -1,7 +1,7 @@
 # ---- Étape 1 : Build ----
 FROM node:lts-alpine AS build
-WORKDIR /app
 RUN apk add --no-cache git
+WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 
@@ -12,7 +12,6 @@ RUN npx prisma generate
 
 # Build TypeScript (adapter si besoin)
 RUN npm run build:full
-RUN npm run build:seed
 
 # ---- Étape 2 : Runtime ----
 FROM node:lts-alpine
