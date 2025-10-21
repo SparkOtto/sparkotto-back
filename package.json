@@ -17,7 +17,7 @@
   },
   "prisma": {
     "seed": "npm run seed",
-    "schema": "prisma/schema/schema.prisma"
+    "schema": "prisma/schema"
   },
   "repository": {
     "type": "git",
