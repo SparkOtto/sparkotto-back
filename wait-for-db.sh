@@ -1,18 +1,21 @@
-#!/bin/sh
+#!/usr/bin/env sh
 set -e
 
-# Attente que la base de données soit prête
-echo "⏳ Attente de la base de données..."
-until pg_isready -h db -U postgres > /dev/null 2>&1; do
+DB_HOST="${DB_HOST:-db}"
+DB_USER="${DB_USER:-postgres}"
+DB_PORT="${DB_PORT:-5432}"
+
+echo "⏳ Attente de la base de données sur $DB_HOST:$DB_PORT..."
+until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" >/dev/null 2>&1; do
   sleep 2
 done
-
 echo "✅ Base de données prête !"
 
-# Exécuter le seed
-echo "🌱 Exécution de Prisma seed..."
+echo "📦 Prisma migrate deploy..."
+npx prisma migrate deploy
+
+echo "🌱 Prisma seed..."
 npx prisma db seed
 
-# Démarrer l'application
 echo "🚀 Lancement de l'application Node.js"
 node dist/index.js

@@ -8,6 +8,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: sparkotto
+    # En local seulement : expose si tu veux te connecter depuis l'hôte
     ports:
       - "5432:5432"
     volumes:
@@ -19,24 +20,34 @@ services:
       retries: 5
 
   backend:
-    image: sparkotto-back-backend
     container_name: sparkotto-back-backend
     build:
       context: .
+      # Assure-toi que le nom correspond exactement à ton fichier (Dockerfile vs dockerfile)
       dockerfile: ./dockerfile
+      # ❌ Pas d'ARGs pour DATABASE_URL ici
       args:
         - NODE_ENV=production
-        - DATABASE_URL=postgresql://postgres:postgres@db:5432/sparkotto
-    pull_policy: build
+    image: sparkotto-back-backend:latest
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sparkotto
-      - TOKEN_GIT=${TOKEN_GIT}
+      NODE_ENV: production
+      # 👉 Prisma : utilise l’hôte docker "db" + ajoute le schema
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/sparkotto?schema=public
+      # Pour wait-for-db.sh
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PORT: "5432"
+      # Active le seed seulement au premier run (mets "false" ensuite)
+      #SEED_ON_START: "true"
+      # Si ton app en a besoin :
+      TOKEN_GIT: ${TOKEN_GIT}
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
+    pull_policy: build  # OK avec Docker Compose moderne / Portainer
 
 volumes:
   pg_data:
