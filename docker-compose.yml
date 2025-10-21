@@ -35,6 +35,8 @@ services:
     image: sparkotto-back-backend:latest
     ports:
       - "3001:3001"
+    expose:
+      - "3001"
     environment:
       NODE_ENV: production
       # 👉 Prisma : utilise l’hôte docker "db" + ajoute le schema
