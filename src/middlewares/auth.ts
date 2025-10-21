@@ -19,8 +19,6 @@ export const authenticateToken = async (
   // Récupération du token depuis le cookie "token"
   const token = req.cookies.token;
 
-  console.log('Token reçu:', token);
-
   if (!token) {
     res.status(401).json({ message: 'Token manquant' });
     return;

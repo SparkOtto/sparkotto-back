@@ -22,57 +22,26 @@ class AdminController {
     async toggleUserStatus(req: Request, res: Response): Promise<Response> {
         const id = parseInt(req.params.id);
         const isActive = req.body.isActive;
+        const userActive = req.cookies.user;
+
         try {
-            const updateUser = await this.adminService.toggleUserStatus(id, isActive);
+            const updateUser = await this.adminService.toggleUserStatus(id, isActive, userActive);
             return res.status(200).json(updateUser);
         } catch (error) {
             return res.status(500).json({error: 'Erreur lors de la mise à jour de l\'utilisateur'});
         }
     }
 
-    /**
-     * Débloquer un utilisateur pour valider sa première inscription
-     * ou supprimer ses données en base si l'inscription est refusée
-     * @param req
-     * @param res
-     */
-    async activateUserAccount(req: Request, res: Response): Promise<Response> {
-        const id = parseInt(req.params.id);
-        const isApproved = req.body; // true pour inscription acceptée ou false si refusée
-        const updatedUser = await this.adminService.toggleUserStatus(id, true);
-
-        if (typeof isApproved !== 'boolean') {
-            throw new Error("Données invalides, si l'erreur persiste, veuillez contacter votre administrateur");
-        }
-
-        try {
-            if (isApproved) {
-                await this.emailService.sendConfirmationEmail(updatedUser); // email de validation
-            } else {
-                await this.emailService.sendRejectionEmail(updatedUser); // email de refus
-                await this.userService.deleteUser(id); // supprimer les données en bdd
-            }
-
-            return res.status(200).json({
-                message: isApproved
-                    ? 'Inscription validée, un email de confirmation a été envoyé à l\'utilisateur'
-                    : 'Inscription refusée, un email de confirmation a été envoyé à l\'utilisateur',
-                user: updatedUser,
-            });
-        } catch (error) {
-            return res.status(500).json({error: 'Erreur lors du taitement de l\'inscription de l\'utilisateur.'});
-        }
-    }
-
     async lockUnlockUser(req: Request, res: Response): Promise<Response> {
         try {
             const { id, isLocked } = req.body;
+            const userActive = req.cookies.user;
 
             if (typeof id !== "number" || typeof isLocked !== "boolean") {
                 return res.status(400).json({ message: "Données invalides" });
             }
 
-            const user = await this.adminService.lockUnlockUser(id, isLocked);
+            const user = await this.adminService.lockUnlockUser(id, isLocked, userActive);
 
             // Envoyer des emails de notification
             try {

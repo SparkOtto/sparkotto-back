@@ -18,11 +18,14 @@ class AdminService {
      * @param id
      * @param isActive
      */
-    async toggleUserStatus(id: number, isActive: boolean): Promise<User>{
+    async toggleUserStatus(id: number, isActive: boolean, userActive: User): Promise<User>{
         //S'assurer que l'ID de l'utilisateur existe en base
         const userExist = await this.userDAO.getUserById(id);
         if(!userExist){
             throw new Error('L\'utilisateur n\'a pas été trouvé');
+        }
+        if(userExist.id_user === userActive.id_user){
+            throw new Error('Vous ne pouvez pas modifier votre propre statut');
         }
         const userData = {
             active: isActive,
@@ -68,10 +71,13 @@ class AdminService {
      * @param id
      * @param isLocked
      */
-    async lockUnlockUser(id: number, isLocked: boolean): Promise<User>{
+    async lockUnlockUser(id: number, isLocked: boolean, userActive: User): Promise<User>{
         const userExist = await this.userDAO.getUserById(id);
         if(!userExist){
             throw new Error('L\'utilisateur n\'a pas été trouvé');
+        }
+        if(userExist.id_user === userActive.id_user){
+            throw new Error('Vous ne pouvez pas bloquer ou débloquer votre propre compte');
         }
         const userData = {account_locked: isLocked};
         return this.userDAO.updateUser(id, userData);
