@@ -23,7 +23,7 @@ RUN apk add --no-cache postgresql-client openssl libc6-compat
 ENV NODE_ENV=production
 
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/prisma ./prisma   # <--- indispensable
+COPY --from=build /app/prisma ./prisma
 
 COPY wait-for-db.sh /app/wait-for-db.sh
 RUN chmod +x /app/wait-for-db.sh
