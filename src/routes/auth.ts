@@ -18,5 +18,9 @@ router.get('/validate-reset-token/:token', (req, res) => authController.validate
 router.get('/ping', (req, res) => {
     res.status(200).json({ message: 'pong' });
 });
+// requete pour tester la bdd
+router.get('/test-db', (req, res) => authController.testDatabaseConnection(req, res));
+
+
 
 export default router;

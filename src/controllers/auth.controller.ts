@@ -275,6 +275,15 @@ class AuthController {
         }
     }
 
+    async testDatabaseConnection(req: Request, res: Response) {
+        // Simple test pour vérifier la connexion à la base de données
+        try {
+            const users = await this.userService.getAllUsers();
+            res.status(200).json({ message: 'Connexion à la base de données réussie', userCount: users.length });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Échec de la connexion à la base de données: ' + error.message });
+        }
+    }
 }
 
 export default AuthController;
