@@ -35,6 +35,8 @@ class AuthController {
               return;
             }
 
+            userData.active = true;
+
             const newUser = await this.userService.createUser(userData);
             res.status(201).json(newUser);
         } catch (error: any) {

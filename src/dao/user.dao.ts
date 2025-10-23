@@ -9,6 +9,7 @@ class UserDAO {
 
   // Créer un nouvel utilisateur
   async createUser(userData: Omit<User, 'id'>): Promise<User> {
+    userData.roleId = 2;
     userData.active = true;
     return this.prisma.user.create({
       data: userData,
