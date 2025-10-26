@@ -3,14 +3,17 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import UserService from '../services/user.service';
 import EmailService from '../services/email.service';
+import AdminService from '../services/admin.service';
 
 class AuthController {
     private userService: UserService;
     private emailService: EmailService;
+    private adminService: AdminService;
 
     constructor() {
         this.userService = new UserService();
         this.emailService = new EmailService();
+        this.adminService = new AdminService();
     }
 
     /**
@@ -23,13 +26,24 @@ class AuthController {
             const { email, password, first_name, last_name, phone_number } = req.body;
             const hashedPassword = bcrypt.hashSync(password, 8);
             const userData = { ...req.body, password: hashedPassword };
+
+            const mailValid = await this.adminService.validateDomaine(userData.email);
+            if (!mailValid.valid) {
+              res.status(400).json({
+                message: "Email non autorisé, veuillez vous inscrire avec votre email professionnel"
+              })
+              return;
+            }
+
+            userData.active = true;
+
             const newUser = await this.userService.createUser(userData);
             res.status(201).json(newUser);
         } catch (error: any) {
             if (error.message === 'Un utilisateur avec cet email existe déjà') {
                 res.status(400).json({ message: error.message });
             } else {
-                res.status(500).json({ message: 'Erreur serveur pour l\'inscription : ' + error });
+                res.status(500).json({ message: 'Erreur serveur pour l\'inscription' });
             }
         }
     }
