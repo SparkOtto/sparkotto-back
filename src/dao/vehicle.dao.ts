@@ -120,10 +120,20 @@ class VehicleDAO {
                 agency: true, 
                 trips: {
                     include: {
-                        driver: true,
+                        driver: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            }
+                        },
                         carpoolings: {
                             include: {
-                                passenger: true,
+                                passenger: {
+                                    select: {
+                                        first_name: true,
+                                        last_name: true,
+                                    }
+                                }
                             }
                         }
                     }

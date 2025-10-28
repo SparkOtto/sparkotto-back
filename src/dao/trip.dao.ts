@@ -30,10 +30,20 @@ class TripDAO {
         return this.prisma.trips.findMany({
             include: {
                 vehicle: true,
-                driver: true,
+                driver: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
+                },
                 carpoolings: {
                     include: {
-                        passenger: true,
+                        passenger: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            }
+                        },
                     },
                 },
                 agency_departure: true,
@@ -47,10 +57,20 @@ class TripDAO {
             where: { id_vehicle },
             include: {
                 vehicle: true,
-                driver: true,
+                driver: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
+                },
                 carpoolings: {
                     include: {
-                        passenger: true,
+                        passenger: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            }
+                        }
                     },
                 },
                 agency_departure: true,
@@ -64,11 +84,21 @@ class TripDAO {
             where: { id_trip: tripId },
             include: {
                 vehicle: true,
-                driver: true,
+                driver: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
+                },
                 key: true,
                 carpoolings: {
                     include: {
-                        passenger: true,
+                        passenger: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            }
+                        }
                     },
                 },
                 agency_departure: true,
@@ -90,11 +120,21 @@ class TripDAO {
             },
             include: {
                 vehicle: true,
-                driver: true,
+                driver: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
+                },
                 key: true,
                 carpoolings: {
                     include: {
-                        passenger: true,
+                        passenger: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            }
+                        }
                     },
                 },
                 agency_departure: true,
@@ -113,7 +153,12 @@ class TripDAO {
             data,
             include: {
                 vehicle: true,
-                driver: true,
+                driver: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
+                },
                 key: true,
                 carpoolings: true,
                 agency_departure: true,
@@ -127,11 +172,21 @@ class TripDAO {
             where: { id_driver: userId },
             include: {
                 vehicle: true,
-                driver: true,
+                driver: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
+                },
                 key: true,
                 carpoolings: {
                     include: {
-                        passenger: true,
+                        passenger: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            }
+                        }
                     },
                 },
                 agency_departure: true,
