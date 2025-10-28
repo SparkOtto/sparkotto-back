@@ -28,7 +28,7 @@ services:
         - SMTP_PORT=587                   # 587 = STARTTLS
         - SMTP_SECURE=false               # 587 => false ; 465 => true
         - SMTP_USER=sparkotto2@gmail.com
-        - SMTP_PASS=${SMTP_PASS}
+        - SMTP_PASS=lzyamqshcsdpbhwu
     ports:
       - "3001:3001"
     environment:
@@ -38,7 +38,7 @@ services:
       - SMTP_PORT=587                   # 587 = STARTTLS
       - SMTP_SECURE=false               # 587 => false ; 465 => true
       - SMTP_USER=sparkotto2@gmail.com
-      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_PASS=lzyamqshcsdpbhwu
     depends_on:
       db:
         condition: service_healthy
