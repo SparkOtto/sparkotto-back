@@ -29,6 +29,11 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/sparkotto
+      - SMTP_HOST=smtp.gmail.com        # remplace par ton provider
+      - SMTP_PORT=587                   # 587 = STARTTLS
+      - SMTP_SECURE=false               # 587 => false ; 465 => true
+      - SMTP_USER=sparkotto2@gmail.com
+      - SMTP_PASS=${SMTP_PASS}
     depends_on:
       db:
         condition: service_healthy
