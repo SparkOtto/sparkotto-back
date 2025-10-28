@@ -111,6 +111,7 @@ async function main() {
     await prisma.vehicles.createMany({
         data: [
             {
+                id_vehicle: 1,
                 brand: 'Renault',
                 model: 'Clio',
                 fuelTypeId: 1,
@@ -123,6 +124,7 @@ async function main() {
                 transmissionId: 1,
             },
             {
+                id_vehicle: 2,
                 brand: 'Peugeot',
                 model: '308',
                 fuelTypeId: 2,
@@ -135,6 +137,7 @@ async function main() {
                 transmissionId: 2,
             },
             {
+                id_vehicle: 3,
                 brand: 'Tesla',
                 model: 'Model 3',
                 fuelTypeId: 3,
@@ -147,6 +150,7 @@ async function main() {
                 transmissionId: 2,
             },
             {
+                id_vehicle: 4,
                 brand: 'Toyota',
                 model: 'Yaris',
                 fuelTypeId: 1,
@@ -159,6 +163,7 @@ async function main() {
                 transmissionId: 1,
             },
             {
+                id_vehicle: 5,
                 brand: 'Smart',
                 model: 'Fortwo',
                 fuelTypeId: 3,
@@ -171,6 +176,7 @@ async function main() {
                 transmissionId: 2,
             },
             {
+                id_vehicle: 6,
                 brand: 'Fiat',
                 model: '500',
                 fuelTypeId: 1,
@@ -183,6 +189,7 @@ async function main() {
                 transmissionId: 1,
             },
             {
+                id_vehicle: 7,
                 brand: 'Nissan',
                 model: 'Leaf',
                 fuelTypeId: 3,
@@ -195,6 +202,7 @@ async function main() {
                 transmissionId: 2,
             },
             {
+                id_vehicle: 8,
                 brand: 'Mini',
                 model: 'Cooper SE',
                 fuelTypeId: 3,
