@@ -1,9 +1,5 @@
 import nodemailer from "nodemailer";
 import {User} from "@prisma/client";
-import {google} from "googleapis";
-import user from "../routes/user";
-import Mail from "nodemailer/lib/mailer";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 class EmailService {
 
@@ -36,7 +32,7 @@ class EmailService {
                 html: htmlContent, // Contenu HTML du mail
             });
         } catch (error) {
-            console.error("Erreur lors de l'envoi de l'email :", error);
+            console.error("Erreur lors de l'envoi de l'email");
             throw new Error('Échec de l\'envoi de l\'email.');
         }
     }
@@ -148,7 +144,7 @@ class EmailService {
         try {
             await this.sendEmail(email, subject, htmlContent);
         } catch (error) {
-            console.error('Erreur lors de l\'envoi de l\'email de notification de blocage:', error);
+            console.error('Erreur lors de l\'envoi de l\'email de notification de blocage');
             // On ne lance pas d'erreur ici car l'email est informatif
         }
     }
@@ -183,7 +179,7 @@ class EmailService {
         try {
             await this.sendEmail(email, subject, htmlContent);
         } catch (error) {
-            console.error('Erreur lors de l\'envoi de l\'email de confirmation de déblocage:', error);
+            console.error('Erreur lors de l\'envoi de l\'email de confirmation de déblocage');
         }
     }
 }

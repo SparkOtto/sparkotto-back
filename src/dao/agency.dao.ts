@@ -5,7 +5,12 @@ const prisma = new PrismaClient();
 
 export const agencyDao = {
   async createAgency(data: Prisma.AgenciesCreateInput): Promise<Agencies> {
-    return await prisma.agencies.create({ data });
+    return await prisma.agencies.create({
+      data: {
+        ...data,
+        additional_info: data.additional_info ?? null,
+      },
+    });
   },
 
   async updateAgency(id_agency: number, data: Partial<Omit<Agencies, 'id_agency'>>): Promise<Agencies | null> {

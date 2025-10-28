@@ -51,8 +51,10 @@ class VehicleDAO {
                     agency_id: agency_id,
                     vehicleKeyId: newVehicle.id_vehicle
                 }
-            ]
+            ],
+            skipDuplicates: true,
         });
+
 
         // Retourner le véhicule avec les clés ajoutées
         return await this.prisma.vehicles.findUnique({
