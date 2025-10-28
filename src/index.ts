@@ -39,11 +39,11 @@ const routesPath = path.join(__dirname, 'routes');
 
 
 // Load OpenAPI specification
-const openApiPath = path.join(__dirname, 'openapi.yaml');
-const openApiDocument = yaml.parse(fs.readFileSync(openApiPath, 'utf8'));
+//const openApiPath = path.join(__dirname, 'openapi.yaml');
+//const openApiDocument = yaml.parse(fs.readFileSync(openApiPath, 'utf8'));
 
 // Serve Swagger UI
-app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(openApiDocument));
+//app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(openApiDocument));
 
 
 /*app.use(
