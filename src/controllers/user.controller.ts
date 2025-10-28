@@ -46,6 +46,11 @@ class UserController {
       userData.active = true;
       const newUser = await this.userService.createUser(userData);
 
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+      if (!passwordRegex.test(userData.password)) {
+        throw new Error('Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial');
+      }
+
       // Envoyer un email de confirmation
       await this.emailService.sendConfirmationEmail(newUser);
 
