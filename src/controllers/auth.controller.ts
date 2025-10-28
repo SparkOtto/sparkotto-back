@@ -40,15 +40,24 @@ class AuthController {
               return;
             }
 
+            console.log(password);
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                res.status(400).json({
+                    message: "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial"
+                });
+                return;
+            }
+
             userData.active = true;
 
             const newUser = await this.userService.createUser(userData);
             res.status(201).json(newUser);
         } catch (error: any) {
             if (error.message === 'Un utilisateur avec cet email existe déjà') {
-                res.status(400).json({ message: error.message });
+                res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
             } else {
-                res.status(500).json({ message: 'Erreur serveur pour l\'inscription' });
+                res.status(500).json({ message: error });
             }
         }
     }
