@@ -9,9 +9,9 @@ done
 echo "✅ Base de données prête !"
 
 # Exécuter le seed
-echo "🌱 Exécution de Prisma seed..."
-npx prisma db seed
+#echo "🌱 Exécution de Prisma seed..."
+#npx prisma db seed
 
 # Démarrer l'application
 echo "🚀 Lancement de l'application Node.js"
-node dist/index.js
+node dist/src/index.js

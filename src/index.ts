@@ -16,8 +16,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,                 // Autorise l’envoi des cookies
+  origin: "http://87.106.9.35:3000",
+  credentials: true,
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],              // Autorise l’envoi des cookies
 }));
 
 app.use(express.json());
