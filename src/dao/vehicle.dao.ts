@@ -118,6 +118,7 @@ class VehicleDAO {
                 agency: true, 
                 trips: {
                     include: {
+                        driver: true,
                         carpoolings: {
                             include: {
                                 passenger: true,
