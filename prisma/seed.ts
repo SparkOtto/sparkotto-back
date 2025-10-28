@@ -257,7 +257,7 @@ async function main() {
                 email: 'axel.mainguy2022@campus-eni.fr',
                 first_name: 'Axel',
                 last_name: 'Mainguy',
-                password: '$2b$08$C6UzMDM.H6dfI/f/IKcZeuG7r8T5C3J0de5pY/1fVPeu1o8a8kOa.', // "password123"
+                password: '$2b$08$IscR5AQ/oxo9UqNStjgav.vI0u6JIEPHIcwai9jfzGWO9pBba41zm', // "password123"
                 phone_number: '0601020304',
                 roleId: 1,
                 agency_id: 1,
@@ -272,7 +272,7 @@ async function main() {
                 email: 'mathieu.lepetitcorps2022@campus-eni.fr',
                 first_name: 'Mathieu',
                 last_name: 'Lepetitcorps',
-                password: '$2b$08$C6UzMDM.H6dfI/f/IKcZeuG7r8T5C3J0de5pY/1fVPeu1o8a8kOa.', // "password123"
+                password: '$2b$08$IscR5AQ/oxo9UqNStjgav.vI0u6JIEPHIcwai9jfzGWO9pBba41zm', // "password123"
                 phone_number: '0605060708',
                 roleId: 1,
                 agency_id: 2,
@@ -287,7 +287,7 @@ async function main() {
                 email: 'claire.martin2019@campus-eni.fr',
                 first_name: 'Claire',
                 last_name: 'Martin',
-                password: '$2b$08$C6UzMDM.H6dfI/f/IKcZeuG7r8T5C3J0de5pY/1fVPeu1o8a8kOa.', // "password123"
+                password: '$2b$08$IscR5AQ/oxo9UqNStjgav.vI0u6JIEPHIcwai9jfzGWO9pBba41zm', // "password123"
                 phone_number: '0608091011',
                 roleId: 1,
                 agency_id: 1,
@@ -302,7 +302,7 @@ async function main() {
                 email: 'mathieu.peran2023@campus-eni.fr',
                 first_name: 'Mathieu',
                 last_name: 'Peran',
-                password: '$2b$08$C6UzMDM.H6dfI/f/IKcZeuG7r8T5C3J0de5pY/1fVPeu1o8a8kOa.', // "password123"
+                password: '$2b$08$IscR5AQ/oxo9UqNStjgav.vI0u6JIEPHIcwai9jfzGWO9pBba41zm', // "password123"
                 phone_number: '0611121314',
                 roleId: 1,
                 agency_id: 2,
@@ -317,7 +317,7 @@ async function main() {
                 email: 'sparkotto2@gmail.com',
                 first_name: 'sparkotto',
                 last_name: 'test',
-                password: '$2b$08$C6UzMDM.H6dfI/f/IKcZeuG7r8T5C3J0de5pY/1fVPeu1o8a8kOa.', // "password123"
+                password: '$2b$08$IscR5AQ/oxo9UqNStjgav.vI0u6JIEPHIcwai9jfzGWO9pBba41zm', // "password123"
                 phone_number: '0615161718',
                 roleId: 2,
                 agency_id: 1,
