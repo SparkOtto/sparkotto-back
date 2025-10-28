@@ -47,6 +47,60 @@ async function main() {
                 additional_info: null,
                 phone: '0607080910',
                 head_office: false
+            },
+            {
+                id_agency: 3,
+                city: 'Marseille',
+                postal_code: 13001,
+                street: '5 Boulevard Longchamp',
+                additional_info: 'Agence secondaire',
+                phone: '0112233445',
+                head_office: false
+            },
+            {
+                id_agency: 4,
+                city: 'Rennes',
+                postal_code: 35000,
+                street: '12 Place de la Mairie',
+                additional_info: null,
+                phone: '0987654321',
+                head_office: false
+            },
+            {
+                id_agency: 5,
+                city: 'Nantes',
+                postal_code: 44000,
+                street: '8 Quai de la Fosse',
+                additional_info: 'Agence principale',
+                phone: '0147258369',
+                head_office: true
+            },
+            {
+                id_agency: 6,
+                city: 'Quimper',
+                postal_code: 29000,
+                street: '3 Rue Kéréon',
+                additional_info: null,
+                phone: '0123456789',
+                head_office: false
+            },
+            {
+                id_agency: 7,
+                city: 'Bordeaux',
+                postal_code: 33000,
+                street: '15 Cours de l\'Intendance',
+                additional_info: 'Agence sud-ouest',
+                phone: '0555666777',
+                head_office: false
+            },
+            {
+                id_agency: 8,
+                city: 'Angers',
+                postal_code: 49000,
+                street: '20 Rue Lenepveu',
+                additional_info: null,
+                phone: '0246813579',
+                head_office: false
             }
         ],
         skipDuplicates: true,
@@ -104,6 +158,54 @@ async function main() {
                 fuel_capacity: 42,
                 transmissionId: 1,
             },
+            {
+                brand: 'Smart',
+                model: 'Fortwo',
+                fuelTypeId: 3,
+                license_plate: 'EV-222-XY',
+                mileage: 20000,
+                seat_count: 2,
+                agency_id: 3,
+                available: true,
+                fuel_capacity: 17,
+                transmissionId: 2,
+            },
+            {
+                brand: 'Fiat',
+                model: '500',
+                fuelTypeId: 1,
+                license_plate: 'AB-333-CD',
+                mileage: 60000,
+                seat_count: 4,
+                agency_id: 4,
+                available: false,
+                fuel_capacity: 35,
+                transmissionId: 1,
+            },
+            {
+                brand: 'Nissan',
+                model: 'Leaf',
+                fuelTypeId: 3,
+                license_plate: 'EV-444-ZZ',
+                mileage: 25000,
+                seat_count: 5,
+                agency_id: 5,
+                available: true,
+                fuel_capacity: 40,
+                transmissionId: 2,
+            },
+            {
+                brand: 'Mini',
+                model: 'Cooper SE',
+                fuelTypeId: 3,
+                license_plate: 'EV-555-AB',
+                mileage: 30000,
+                seat_count: 4,
+                agency_id: 6,
+                available: true,
+                fuel_capacity: 32,
+                transmissionId: 2,
+            },
         ],
         skipDuplicates: true,
     });
@@ -119,6 +221,15 @@ async function main() {
             { id_key: 6, key_name: 'Clé de secours Peugeot 308', agency_id: 2, vehicleKeyId: 2 },
             { id_key: 7, key_name: 'Clé de secours Tesla Model 3', agency_id: 1, vehicleKeyId: 3 },
             { id_key: 8, key_name: 'Clé de secours Toyota Yaris', agency_id: 2, vehicleKeyId: 4 },
+            // Additional keys for other vehicles
+            { id_key: 9, key_name: 'Clé Smart Fortwo', agency_id: 3, vehicleKeyId: 5 },
+            { id_key: 10, key_name: 'Clé Fiat 500', agency_id: 4, vehicleKeyId: 6 },
+            { id_key: 11, key_name: 'Clé Nissan Leaf', agency_id: 5, vehicleKeyId: 7 },
+            { id_key: 12, key_name: 'Clé Mini Cooper SE', agency_id: 6, vehicleKeyId: 8 },
+            { id_key: 13, key_name: 'Clé de secours Smart Fortwo', agency_id: 3, vehicleKeyId: 5 },
+            { id_key: 14, key_name: 'Clé de secours Fiat 500', agency_id: 4, vehicleKeyId: 6 },
+            { id_key: 15, key_name: 'Clé de secours Nissan Leaf', agency_id: 5, vehicleKeyId: 7 },
+            { id_key: 16, key_name: 'Clé de secours Mini Cooper SE', agency_id: 6, vehicleKeyId: 8 },
         ],
         skipDuplicates: true,
     });
@@ -127,7 +238,8 @@ async function main() {
         data: [
             { id_domaine: 1, domaine_name: 'campus-eni.fr' },
             { id_domaine: 2, domaine_name: 'gmail.com' },
-        ]
+        ],
+        skipDuplicates: true,
     });
 
     await prisma.user.createMany({
@@ -211,8 +323,12 @@ async function main() {
         skipDuplicates: true,
     });
 
+
     console.log('Seed data inserted successfully');
 }
+
+
+
 
 main()
     .catch((e) => {

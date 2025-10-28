@@ -27,6 +27,11 @@ class AuthController {
             const hashedPassword = bcrypt.hashSync(password, 8);
             const userData = { ...req.body, password: hashedPassword };
 
+            if(!email || !password || !first_name || !last_name || !phone_number) {
+                res.status(400).json({ message: 'Tous les champs sont requis' });
+                return;
+            }
+
             const mailValid = await this.adminService.validateDomaine(userData.email);
             if (!mailValid.valid) {
               res.status(400).json({
